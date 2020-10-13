@@ -1,0 +1,17 @@
+{
+  "name": "react-test-render-transformer",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "yarn clean && tsc"
+  },
+  "dependencies": {
+    "react-test-renderer": "16.9.0"
+  },
+  "devDependencies": {
+    "@types/react-native": "^0.63.25",
+    "@types/react-test-renderer": "^16.9.3"
+  }
+}

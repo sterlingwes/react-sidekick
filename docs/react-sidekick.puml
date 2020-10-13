@@ -1,0 +1,31 @@
+@startuml react-sidekick system
+
+participant node as "Node.js-based\nTest Renderer"
+participant sidekick as "sidekick"
+participant host as "sidekick host"
+participant transform as "test-render-transform"
+participant config as "sidekick config"
+collections artifacts as "artifact manager"
+
+node -> sidekick: setup()
+sidekick -> config: getConfig()
+config -> sidekick: host view config or defaults
+sidekick -> host: init() && listen()
+
+node -> sidekick: Call capture(reactTestInstance)
+sidekick -> transform: transform(reactTestInstance)
+transform -> sidekick: raw imperative JS for view
+sidekick -> host: update(viewJsToInject)
+note left
+capture calls queue up
+while the host is busy
+end note
+
+host -> sidekick: updated event
+sidekick -> artifacts: serializeMetadata() && snapshot()
+
+node -> sidekick: Call capture(reactTestInstance) and repeat
+node -> sidekick: teardown()
+sidekick -> host: cleanup()
+
+@enduml
