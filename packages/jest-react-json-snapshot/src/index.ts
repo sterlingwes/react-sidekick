@@ -10,7 +10,6 @@ const instanceOfTestRenderTree = (
 ): value is ReactTestRendererTree => {
   return (
     typeof value === "object" &&
-    "nodeType" in value &&
     "rendered" in value &&
     "type" in value &&
     "props" in value

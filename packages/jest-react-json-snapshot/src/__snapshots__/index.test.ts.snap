@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jest react json snapshot serializer simple tree should produce a JSON snapshot w/ callsite info 1`] = `
+Array [
+  {
+  "meta": {
+    "source": "react-test-render-transformer",
+    "callSite": {
+      "filePath": "/packages/jest-react-json-snapshot/dist/index.js",
+      "lineNumber": 22,
+      "column": 11
+    }
+  },
+  "tree": []
+},
+]
+`;
