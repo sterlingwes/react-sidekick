@@ -70,7 +70,7 @@ const rnPrimitiveName = (node: ReactTestRendererTree) => {
   return undefined;
 };
 
-type RenderableNode = SimpleNode | string;
+export type RenderableNode = SimpleNode | string;
 
 type SimpleNode = {
   type: string;
@@ -160,10 +160,20 @@ const traversePrimitiveTree = (children: RenderableNode[]): string => {
 // public API
 //
 
+export const transformToSimpleTree = (
+  testInstanceTree: ReactTestRendererTree
+): RenderableNode[] => {
+  const { rendered } = testInstanceTree;
+  if (!rendered) {
+    throw new Error(`Provided test instance has no rendered state`);
+  }
+  return traverseTestTree(rendered);
+};
+
 export const transform = (testInstanceTree: ReactTestRendererTree) => {
   const { rendered } = testInstanceTree;
   if (!rendered) {
-    throw new Error(`Provided test instance has not rendered state`);
+    throw new Error(`Provided test instance has no rendered state`);
   }
   const primitiveTree = traverseTestTree(rendered);
   return asFragment(traversePrimitiveTree(primitiveTree));
