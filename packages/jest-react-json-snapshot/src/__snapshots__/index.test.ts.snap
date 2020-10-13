@@ -11,7 +11,27 @@ Array [
       "column": 11
     }
   },
-  "tree": []
+  "tree": [
+    {
+      "type": "View",
+      "props": {
+        "style": {
+          "flex": 1,
+          "backgroundColor": "red"
+        }
+      },
+      "children": [
+        {
+          "type": "View",
+          "props": {
+            "style": {
+              "backgroundColor": "blue"
+            }
+          }
+        }
+      ]
+    }
+  ]
 },
 ]
 `;

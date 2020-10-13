@@ -1,11 +1,26 @@
-export const simpleFixture = [
+import { ReactTestRendererTree } from "react-test-renderer";
+
+export const simpleFixture: ReactTestRendererTree[] = [
   {
-    type: "View",
+    nodeType: "component",
+    type: "MyComponent",
     props: { style: { flex: 1, backgroundColor: "red" } },
+    instance: null,
+    children: null,
     rendered: {
+      nodeType: "host",
       type: "View",
-      props: { style: { borderRadius: 10, backgroundColor: "blue" } },
-      rendered: null,
+      props: { style: { flex: 1, backgroundColor: "red" } },
+      instance: null,
+      children: null,
+      rendered: {
+        nodeType: "host",
+        type: "View",
+        props: { style: { backgroundColor: "blue" } },
+        instance: null,
+        rendered: null,
+        children: null,
+      },
     },
   },
 ];
