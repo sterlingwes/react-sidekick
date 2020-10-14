@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+node_resolve_package_path () {
+  node -e "console.log(require.resolve('react-sidekick/$1'))"
+}
+
+BIN_PATH=$(node_resolve_package_path ./dist/bin.js)
+
+node "$BIN_PATH"
