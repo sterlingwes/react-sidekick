@@ -142,7 +142,7 @@ const createElement = (node: SimpleNode): string =>
   })`;
 
 const traversePrimitiveTree = (children: RenderableNode[]): string => {
-  if (!children || children.length === 0) {
+  if (Array.isArray(children) === false) {
     return "undefined";
   }
 
@@ -168,6 +168,10 @@ export const transformToSimpleTree = (
     throw new Error(`Provided test instance has no rendered state`);
   }
   return traverseTestTree(rendered);
+};
+
+export const transformSimpleTree = (children: RenderableNode[]) => {
+  return asFragment(traversePrimitiveTree(children));
 };
 
 export const transform = (testInstanceTree: ReactTestRendererTree) => {

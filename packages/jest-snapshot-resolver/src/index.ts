@@ -30,17 +30,31 @@ const createSnapshotFilter = (valuePattern: RegExp = sidekickTest) => (
   return !!match;
 };
 
+type SnapshotValue = {
+  meta: {
+    source: string;
+    callSite: CallContext | null;
+  };
+  tree: any;
+};
+
+type CallContext = {
+  filePath: string;
+  lineNumber: number;
+  column: number;
+};
+
 type Snapshot = {
   path: string;
   name: string;
-  value: any;
+  value: SnapshotValue;
 };
 
 type SnapshotMap = {
   [path: string]: Snapshot[];
 };
 
-const parseSnapshotValue = (value: string): any => {
+const parseSnapshotValue = (value: string): SnapshotValue | null => {
   try {
     return JSON.parse(value.replace(/^\s+Array\s+/, ""));
   } catch (e) {
