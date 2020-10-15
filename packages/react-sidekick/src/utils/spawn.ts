@@ -30,16 +30,19 @@ const setupEventHandlers = (
 };
 
 type EventType = "onData" | "onError" | "onClose";
-export type Predicate = (type: EventType, data: Buffer | number) => boolean;
+export type Predicate<T> = (type: EventType, data: Buffer | number) => T;
 
 const defaultOptions = {
   resolvePredicate: (eventType: EventType, eventData: Buffer | number) =>
     eventType === "onClose",
+  rejectPredicate: (eventType: EventType, eventData: Buffer | number) =>
+    undefined,
   // add timeout option w/ reject
 };
 
 type Options = {
-  resolvePredicate: Predicate;
+  resolvePredicate: Predicate<boolean>;
+  rejectPredicate: Predicate<Error | undefined>;
 };
 
 type SpawnArgs = [string, ReadonlyArray<string>];
@@ -53,7 +56,7 @@ export const spawn = (
   spawnArgs: SpawnArgs,
   options: Options = defaultOptions
 ): Promise<Buffer> => {
-  const { resolvePredicate } = options;
+  const { resolvePredicate, rejectPredicate } = options;
   if (debugMode) console.log(joinCommand(spawnArgs));
   const proc = _spawn(...spawnArgs);
 
@@ -86,6 +89,13 @@ export const spawn = (
         if (debugMode) console.log("onData", data.toString());
         if (resolvePredicate("onData", data)) {
           end(null, data);
+          return;
+        }
+
+        const err = rejectPredicate("onData", data);
+        if (err) {
+          end(err);
+          return;
         }
       },
 
@@ -93,14 +103,28 @@ export const spawn = (
         if (debugMode) console.log("onError", data.toString());
         if (resolvePredicate("onError", data)) {
           end(data);
+          return;
+        }
+
+        const err = rejectPredicate("onError", data);
+        if (err) {
+          end(err);
+          return;
         }
       },
 
       onClose: (data) => {
         if (debugMode) console.log("onClose", data);
         if (resolvePredicate("onClose", data)) {
-          // reject instead on specific error codes?
           end();
+          return;
+        }
+
+        // reject instead on specific error codes?
+        const err = rejectPredicate("onClose", data);
+        if (err) {
+          end(err);
+          return;
         }
       },
     });

@@ -5,8 +5,9 @@ const prepJsonString = (jsonString: string) => {
 };
 
 const renderNotice = "RENDERED!!";
+const jsError = "Unhandled JS Exception";
 
-const resolvePredicate: Predicate = (eventType, data) => {
+const resolvePredicate: Predicate<boolean> = (eventType, data) => {
   if (eventType !== "onData") return false;
 
   try {
@@ -19,6 +20,20 @@ const resolvePredicate: Predicate = (eventType, data) => {
   }
 
   return false;
+};
+
+const rejectPredicate: Predicate<Error | undefined> = (eventType, data) => {
+  if (eventType !== "onData") return;
+
+  try {
+    const json = JSON.parse(prepJsonString(data.toString()));
+    if (json.eventMessage.includes(jsError)) {
+      const errorMessage = `Failed to render view in snapshot host:\n\n${json.eventMessage}`;
+      return new Error(errorMessage);
+    }
+  } catch (e) {
+    // discard malformed
+  }
 };
 
 export const watchLogs = async () => {
@@ -41,6 +56,6 @@ export const watchLogs = async () => {
         'subsystem CONTAINS[c] "react"',
       ],
     ],
-    { resolvePredicate }
+    { resolvePredicate, rejectPredicate }
   );
 };
