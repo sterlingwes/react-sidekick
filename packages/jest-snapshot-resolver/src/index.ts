@@ -44,10 +44,10 @@ type CallContext = {
   column: number;
 };
 
-type Snapshot = {
+export type Snapshot = {
   path: string;
   name: string;
-  value: SnapshotValue;
+  value: SnapshotValue | null;
 };
 
 type SnapshotMap = {

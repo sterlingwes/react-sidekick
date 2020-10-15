@@ -9,6 +9,7 @@ const instanceOfTestRenderTree = (
   value: any
 ): value is ReactTestRendererTree => {
   return (
+    value != null &&
     typeof value === "object" &&
     "rendered" in value &&
     "type" in value &&
