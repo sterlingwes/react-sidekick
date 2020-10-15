@@ -3,8 +3,8 @@ import { queueSnapshot, waitForQueue } from "./snapshot-queue";
 import { TeardownOptions, IPCMessage } from "./ipc";
 import { Frame } from "./utils/stack-frame-parser";
 
-export const snapshot = (js: string, callContext: Frame) => {
-  queueSnapshot(js, callContext);
+export const snapshot = (js: string, callContext: Frame, name?: string) => {
+  queueSnapshot(js, callContext, name);
 };
 
 const defaultTeardownOptions = {
