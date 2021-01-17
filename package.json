@@ -1,6 +1,6 @@
 {
-  "name": "react-sidekick",
-  "version": "1.0.0",
+  "name": "react-sidekick-monorepo",
+  "version": "0.0.0",
   "main": "index.js",
   "author": "Wes Johnson <wjohnson@wealthsimple.com>",
   "license": "MIT",

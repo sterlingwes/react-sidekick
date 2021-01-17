@@ -7,7 +7,7 @@ Array [
     "source": "react-test-render-transformer",
     "callSite": {
       "filePath": "/packages/jest-react-json-snapshot/dist/index.js",
-      "lineNumber": 22,
+      "lineNumber": 23,
       "column": 11
     }
   },
