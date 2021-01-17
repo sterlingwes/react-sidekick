@@ -57,7 +57,7 @@ const rnComponent = [
 //
 
 const rnPrimitiveName = (node: ReactTestRendererTree) => {
-  if (!node.type || node.nodeType !== "host") {
+  if (!node || !node.type || node.nodeType !== "host") {
     return undefined;
   }
 
@@ -102,6 +102,10 @@ const traverseTestTree = (
       : [rendered];
 
   return children.reduce<RenderableNode[]>((acc, childNode) => {
+    if (!childNode) {
+      return acc;
+    }
+
     if (typeof childNode === "string") {
       return acc.concat(childNode);
     }
