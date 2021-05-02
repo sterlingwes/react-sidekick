@@ -4,7 +4,7 @@ export const resolvePackage = (packageName: string) => {
   return `${basePath}${packageName}`;
 };
 
-const basePath = resolvePackage("react-sidekick-native-host");
+const basePath = resolvePackage("@react-sidekick/native-host");
 
 const appPath = "rnfastview.app";
 const appBundlePath = `${basePath}/${appPath}`;

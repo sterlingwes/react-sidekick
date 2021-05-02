@@ -4,7 +4,7 @@ const prepJsonString = (jsonString: string) => {
   return jsonString.replace(/^[,\[]/, "").trim();
 };
 
-const renderNotice = "RENDERED!!";
+const renderNotice = "sidekick host: component rendered";
 const jsError = "Unhandled JS Exception";
 
 const resolvePredicate: Predicate<boolean> = (eventType, data) => {

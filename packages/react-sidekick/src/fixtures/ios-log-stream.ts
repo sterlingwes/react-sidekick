@@ -1,6 +1,6 @@
 export const malformedTargetJsonData = (prefix: string) => `${prefix}{
   "traceID" : 7593536572752132,
-  "eventMessage" : "'HEYOOOO... RENDERED!!', '{\\"hello\\":\\"world\\"}'",
+  "eventMessage" : "'sidekick host: component rendered'",
   "eventType" : "logEvent",
   "source" : null,
   "formatString" : "%{public}s",

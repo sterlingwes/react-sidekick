@@ -1,8 +1,8 @@
 const fakeBasePath = "/Users/you/someproject";
-const rnHostModulePath = "node_modules/react-sidekick-native-host";
+const rnHostModulePath = "node_modules/@react-sidekick/native-host";
 
 export const resolvePackage = (packageName: string) => {
-  if (packageName === "react-sidekick-native-host") {
+  if (packageName === "@react-sidekick/native-host") {
     return `${fakeBasePath}/${rnHostModulePath}`;
   }
 

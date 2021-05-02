@@ -10,7 +10,7 @@ const replacementTarget = replacementTemplate("null");
 const readFile = paths.bundlePath;
 const writeFile = `${paths.appBundlePath}/main.jsbundle.tmp`;
 
-const replace = (replacementValue: string) => {
+const replace = (replacementValue: string): Promise<void> => {
   return new Promise((resolve) => {
     const to = createWriteStream(writeFile);
     createReadStream(readFile)

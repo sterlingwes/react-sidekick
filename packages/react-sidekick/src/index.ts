@@ -1,8 +1,8 @@
-import { fork as forkNodeProcess } from "child_process";
-import { transform } from "react-test-render-transformer";
-import { ReactTestRendererTree } from "react-test-renderer";
-import { IPCMessage, TeardownOptions } from "./ipc";
+import { ReactElement } from "react";
+import { transformJson } from "react-test-render-transformer";
+import TestRenderer from "react-test-renderer";
 import { parseStackFrame } from "./utils/stack-frame-parser";
+import { runSnapshot } from "./snapshot";
 
 import { boot } from "./simctl";
 
@@ -20,30 +20,27 @@ const captureCallFrame = () => {
   return snapshotContext;
 };
 
-export const fork = () => {
-  const childProcess = forkNodeProcess(
-    `./node_modules/react-sidekick/dist/main.js`
-  );
+export const snapshot = async (element: ReactElement) => {
+  const testRenderer = TestRenderer.create(element);
+  const tree = testRenderer.toJSON();
 
-  const send = (
-    message: IPCMessage,
-    callback?: ((err: Error | null) => void) | undefined
-  ) => childProcess.send(message, callback);
+  if (!tree) {
+    throw new Error(`Cannot snapshot ${element} which returned a "null" tree.`);
+  }
 
-  return {
-    snapshot: (testInstance: ReactTestRendererTree) => {
-      const jsString = transform(testInstance);
-      const callContext = captureCallFrame();
-      if (callContext == null) {
-        throw new Error(`Unable to capture call context, no snapshot taken`);
-      }
-      send({ method: "snapshot", jsString, callContext }, (err) =>
-        err ? console.log("react-sidekick IPC send error", err) : null
-      );
-    },
+  // @ts-ignore
+  const jsString = transformJson(tree);
+  const callContext = captureCallFrame();
 
-    teardown: (options: TeardownOptions) => {
-      send({ method: "teardown", options });
-    },
-  };
+  console.log({ jsString });
+
+  if (callContext == null) {
+    throw new Error(`Unable to capture call context, no snapshot taken`);
+  }
+
+  console.log("setting up environment...");
+  await setup();
+  console.log("running snapshot...");
+  await runSnapshot(jsString, callContext);
+  console.log("snapshot taken!");
 };

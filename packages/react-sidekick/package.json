@@ -3,22 +3,25 @@
   "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
+  "files": [
+    "bin/**",
+    "dist/**"
+  ],
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "yarn clean && tsc"
   },
   "bin": "./bin/react-sidekick",
   "dependencies": {
-    "@types/replacestream": "^4.0.0",
-    "jest-snapshot-resolver": "^1.0.0",
-    "react-test-render-transformer": "^1.0.0",
+    "@react-sidekick/native-host": "^0.1.0",
+    "react-test-render-transformer": "^0.1.0",
     "replacestream": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^14.11.8",
-    "@types/react-test-renderer": "^16.9.3"
-  },
-  "peerDependencies": {
-    "react-test-render-transformer": "*"
+    "@types/react": "^16.0.0",
+    "@types/react-test-renderer": "^16.9.3",
+    "@types/replacestream": "^4.0.0",
+    "react": "^16.0.0"
   }
 }
