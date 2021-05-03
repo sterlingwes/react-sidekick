@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { transformJson } from "react-test-render-transformer";
+import { transform } from "react-test-render-transformer";
 import TestRenderer from "react-test-renderer";
 import { parseStackFrame } from "./utils/stack-frame-parser";
 import { runSnapshot } from "./snapshot";
@@ -29,7 +29,7 @@ export const snapshot = async (element: ReactElement) => {
   }
 
   // @ts-ignore
-  const jsString = transformJson(tree);
+  const jsString = transform(tree);
   const callContext = captureCallFrame();
 
   console.log({ jsString });
