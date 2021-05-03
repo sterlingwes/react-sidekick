@@ -78,4 +78,5 @@ junit.xml
 dist/
 
 # tmp
-rnfastview.app
+rnfastview.app*
+jsstringex.js
