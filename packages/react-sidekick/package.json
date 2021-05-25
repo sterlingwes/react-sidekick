@@ -9,11 +9,12 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "yarn clean && tsc"
+    "build": "yarn clean && tsc && ./version-cli.sh"
   },
-  "bin": "./bin/react-sidekick",
+  "bin": "./dist/bin.js",
   "dependencies": {
-    "@react-sidekick/native-host": "^0.1.0",
+    "@react-sidekick/native-host": "../react-sidekick-native-host",
+    "ora": "^5.4.0",
     "react-test-render-transformer": "^0.1.0",
     "replacestream": "^4.0.3"
   }
