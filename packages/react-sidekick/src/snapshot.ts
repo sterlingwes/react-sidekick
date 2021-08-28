@@ -42,3 +42,35 @@ export const runSnapshot = async (
     })
     .catch((err: string | Error) => console.log("received error:", err));
 };
+
+interface SnapshotOptions {
+  name: string;
+  jsString: string;
+  outputPath?: string;
+}
+
+export const runSimpleSnapshot = async ({
+  name,
+  jsString,
+  outputPath,
+}: SnapshotOptions) => {
+  let startTime = process.hrtime();
+  if (name) {
+    console.log(`running snapshot for "${name}"`);
+  }
+  await inject(jsString);
+  await install(appBundlePath);
+  await launch(hostAppBundleIdentifier);
+
+  return watchLogs()
+    .then(() => wait()) // required to wait out splash screen fade post-launch
+    .then(() => screenshot(outputPath || "./snapshot-render.png"))
+    .then(() => terminate(hostAppBundleIdentifier))
+    .then(() => {
+      if (name) {
+        const finishTime = process.hrtime(startTime);
+        console.log(`finished snapshot in ${seconds(finishTime[1])}s.`);
+      }
+    })
+    .catch((err: string | Error) => console.log("received error:", err));
+};

@@ -9,13 +9,19 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "yarn clean && tsc && ./version-cli.sh"
+    "build": "yarn clean && tsc && ./version-cli.sh",
+    "push": "yarn build && yalc push"
   },
   "bin": "./dist/bin.js",
   "dependencies": {
     "@react-sidekick/native-host": "../react-sidekick-native-host",
+    "glob": "^7.1.7",
     "ora": "^5.4.0",
     "react-test-render-transformer": "^0.1.0",
-    "replacestream": "^4.0.3"
+    "replacestream": "^4.0.3",
+    "ts-node": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.4"
   }
 }

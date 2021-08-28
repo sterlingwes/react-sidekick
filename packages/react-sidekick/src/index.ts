@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { transform } from "react-test-render-transformer";
 import TestRenderer from "react-test-renderer";
 import { parseStackFrame } from "./utils/stack-frame-parser";
@@ -20,7 +19,7 @@ const captureCallFrame = () => {
   return snapshotContext;
 };
 
-export const snapshot = async (element: ReactElement) => {
+export const snapshot = async (element: JSX.Element) => {
   const testRenderer = TestRenderer.create(element);
   const tree = testRenderer.toJSON();
 

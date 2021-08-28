@@ -9,9 +9,13 @@ import {
 //
 
 const react = "g.react";
-const rn = (elementType: string) => `g.rn.${elementType}`;
+const rn = (elementType: string) => `g.rn.${elementType}`; // TODO: wrap with fn that throws when elementType ref is undefined
 const asFragment = (children: string): string =>
   `${react}.createElement(${react}.Fragment, null, ${children})`;
+const rnAsserted = (elementType: string) =>
+  `${rn(
+    elementType
+  )} || throw new Error('Component type "${elementType}" not available / supported yet.')`;
 
 const transformProps = (node: ReactTestRendererJSON) => {
   switch (node.type) {
@@ -32,7 +36,7 @@ const transformProps = (node: ReactTestRendererJSON) => {
 };
 
 const createElement = (node: ReactTestRendererJSON): string =>
-  `${react}.createElement(${rn(node.type)}, ${transformProps(node)}, ${
+  `${react}.createElement(${rnAsserted(node.type)}, ${transformProps(node)}, ${
     node.children ? traversePrimitiveTree(node.children) : "undefined"
   })`;
 
