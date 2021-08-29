@@ -16,6 +16,7 @@ const buildIOS = async () => {
   ];
   const buildPath = `${getConfigPath()}/build-ios`;
   const logPath = `${buildPath}/xcbuild-log`;
+  console.log(`running xcodebuild with args: ${xcbuildArgs.join(' ')} with local build path: ${buildPath}`)
   await spawnWithLog(
     "xcodebuild",
     [...xcbuildArgs, "-derivedDataPath", `${buildPath}`],
