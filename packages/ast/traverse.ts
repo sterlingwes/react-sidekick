@@ -12,7 +12,7 @@ import ts, {
   SyntaxKind,
 } from "typescript";
 
-const debug = process.env.argv?.includes("DEBUG");
+const debug = process.env.DEBUG;
 const log = (...args: any[]) => {
   if (debug) console.log(...args);
 };
@@ -89,7 +89,6 @@ const saveJsxElement = (
       break;
   }
 
-  log(SyntaxKind[element.tagName.kind]);
   const props = attributes.properties.reduce((acc, attr) => {
     if (attr.kind !== SyntaxKind.JsxAttribute) {
       return acc;
@@ -101,8 +100,6 @@ const saveJsxElement = (
     };
   }, {});
 
-  log({ props });
-
   const savedNode = createNode(id, node);
   tree.children.push(savedNode);
   return savedNode;
@@ -112,7 +109,7 @@ let lastIdentifier: string | undefined;
 
 const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
   if (!node) {
-    log("! no node !");
+    log("! no node ! did you pass a valid entry file path?");
     process.exit(1);
   }
 
@@ -151,10 +148,8 @@ const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
         lastIdentifier = undefined;
       }
       const newTree = saveJsxElement(childNode, parentNode);
-      log("saved", newTree.id);
       traverse(childNode, newTree);
     } else if (interesting(childNode)) {
-      log("hmm...", SyntaxKind[childNode.kind]);
       traverse(childNode, tree);
     }
   });
