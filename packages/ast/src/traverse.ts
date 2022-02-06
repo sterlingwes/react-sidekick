@@ -3,91 +3,20 @@ import ts, {
   ImportDeclaration,
   ImportSpecifier,
   JsxElement,
-  JsxExpression,
   JsxOpeningElement,
   JsxSelfClosingElement,
   Node,
   SourceFile,
-  StringLiteral,
   SyntaxKind,
 } from "typescript";
-
-const debug = process.env.DEBUG;
-const log = (...args: any[]) => {
-  if (debug) console.log(...args);
-};
-
-type Id = string; // "Component-ANCESTRAL_ID"
-type Name = string; // "Component"
-type AncestralId = string; // "ANCESTRAL_ID"
-type FilePath = string; // "workspace/path/file.ts"
-type FileExport = Id;
-
-interface NodeTree {
-  id: Id;
-  children: NodeTree[];
-}
-
-interface FileProperties {
-  start: AncestralId;
-  end: AncestralId[];
-  uses: FilePath[];
-}
-
-interface NodeElement {
-  name: Name;
-  file?: FilePath;
-}
-
-interface Lookups {
-  files: Record<FilePath, Record<FileExport, FileProperties>>;
-  elements: Record<Id, NodeElement>;
-}
-
-interface State extends Lookups {
-  hierarchy: NodeTree;
-}
-
-const createNode = (id: Id) => ({
-  id,
-  children: [],
-});
-
-const interestingTypes = [
-  SyntaxKind.ArrowFunction,
-  SyntaxKind.Block,
-  SyntaxKind.FirstStatement,
-  SyntaxKind.ParenthesizedExpression,
-  SyntaxKind.ReturnStatement,
-  SyntaxKind.VariableDeclaration,
-  SyntaxKind.VariableDeclarationList,
-];
-
-const interesting = (node: Node) => {
-  return interestingTypes.includes(node.kind);
-};
-
-const target = (node: Node): node is JsxElement | JsxSelfClosingElement =>
-  node.kind === SyntaxKind.JsxElement ||
-  node.kind === SyntaxKind.JsxSelfClosingElement;
-
-const jsxValueName = (node: JsxExpression | StringLiteral | undefined) => {
-  if (node?.kind === SyntaxKind.JsxExpression) {
-    const exp = (node as JsxExpression).expression;
-    if (exp?.kind === SyntaxKind.Identifier) {
-      return (exp as Identifier).escapedText;
-    }
-  } else if (node?.kind === SyntaxKind.StringLiteral) {
-    return (node as StringLiteral).text;
-  }
-
-  return null;
-};
+import { log } from "./debug.util";
+import { createNode, interesting, jsxValueName, target } from "./node.util";
+import { AstState, NodeLookups, NodeTree } from "./types";
 
 const saveJsxElement = (
   node: JsxElement | JsxSelfClosingElement,
   tree: NodeTree,
-  lookups: Lookups
+  lookups: NodeLookups
 ) => {
   let element: JsxSelfClosingElement | JsxOpeningElement;
 
@@ -133,7 +62,7 @@ let lastIdentifier: string | undefined;
 const traverse = (
   node: Node | SourceFile | undefined,
   tree: NodeTree,
-  lookups: Lookups
+  lookups: NodeLookups
 ) => {
   if (!node) {
     log("! no node ! did you pass a valid entry file path?");
@@ -183,7 +112,7 @@ const traverse = (
   });
 };
 
-export const traverseFromFile = (filePath: string): State => {
+export const traverseFromFile = (filePath: string): AstState => {
   const program = ts.createProgram([filePath], {
     noEmitOnError: true,
     noImplicitAny: false,

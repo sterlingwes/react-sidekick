@@ -1,4 +1,4 @@
-import { renderTreeText, traverseFromFile } from "./traverse";
+import { renderTreeText, traverseFromFile } from "../src/traverse";
 
 describe("traverseFromFile", () => {
   describe("sample-app", () => {
