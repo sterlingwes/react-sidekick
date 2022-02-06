@@ -18,10 +18,15 @@ export const createNode = (id: Id) => ({
   children: [],
 });
 
+/**
+ * add any types here that could reasonably lead us to a JSX Element
+ */
 const interestingTypes = [
   SyntaxKind.ArrowFunction,
   SyntaxKind.Block,
   SyntaxKind.FirstStatement,
+  SyntaxKind.JsxAttribute,
+  SyntaxKind.JsxAttributes,
   SyntaxKind.ParenthesizedExpression,
   SyntaxKind.ReturnStatement,
   SyntaxKind.VariableDeclaration,
@@ -30,6 +35,29 @@ const interestingTypes = [
 
 export const interesting = (node: Node) => {
   return interestingTypes.includes(node.kind);
+};
+
+export const possibleComponentExport = (
+  currentKind: SyntaxKind,
+  lastKind: SyntaxKind
+) => {
+  return (
+    lastKind === SyntaxKind.VariableDeclaration &&
+    currentKind === SyntaxKind.Identifier
+  );
+};
+
+/**
+ * add any types here that would mark a part of the tree we're not
+ * interested in traversing further
+ */
+const ignoredTypes = [
+  SyntaxKind.JsxOpeningElement, // we get to this via JsxElement type
+  SyntaxKind.JsxClosingElement, // we get to this via JsxElement type
+];
+
+export const ignored = (node: Node) => {
+  return ignoredTypes.includes(node.kind);
 };
 
 export const target = (
@@ -79,7 +107,9 @@ export const jsxTagName = (node: JsxSelfClosingElement | JsxOpeningElement) => {
   return name;
 };
 
-export const jsxProps = (node: JsxSelfClosingElement | JsxOpeningElement) => {
+export const jsxProps = (
+  node: JsxSelfClosingElement | JsxOpeningElement
+): Record<string, unknown> => {
   const { attributes } = node;
   const props = attributes.properties.reduce((acc, attr) => {
     if (attr.kind !== SyntaxKind.JsxAttribute) {

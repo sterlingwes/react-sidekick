@@ -6,7 +6,9 @@ describe("sample-app tests", () => {
   let state: ReturnType<typeof traverseFromFile>;
 
   beforeEach(() => {
-    state = traverseFromFile(entryPath);
+    state = traverseFromFile(entryPath, {
+      plugins: [require("../src/libraries/react-navigation")],
+    });
   });
 
   it("should represent the full component hierarchy", () => {

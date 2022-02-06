@@ -1,8 +1,27 @@
+import { JsxOpeningElement, JsxSelfClosingElement, Node } from "typescript";
+
 export type Id = string; // "Component-ANCESTRAL_ID"
-type Name = string; // "Component"
+export type ComponentName = string; // "Component"
 export type AncestralId = string; // "ANCESTRAL_ID"
 type FilePath = string; // "workspace/path/file.ts"
 type FileExport = Id;
+type Binding = string;
+export type CrawlPaths = Record<FilePath, Binding[]>;
+
+interface ComponentVisitorInput {
+  name: ComponentName;
+  element: JsxSelfClosingElement | JsxOpeningElement;
+  tree: NodeTree;
+  lookups: NodeLookups;
+  names: Set<string>;
+}
+
+export type PluginVisitor = (input: ComponentVisitorInput) => void;
+
+export interface Plugin {
+  componentIds: string[];
+  visitComponent: PluginVisitor;
+}
 
 export interface NodeTree {
   id: Id;
@@ -16,13 +35,14 @@ interface FileProperties {
 }
 
 interface NodeElement {
-  name: Name;
+  name: ComponentName;
   file?: FilePath;
 }
 
 export interface NodeLookups {
   files: Record<FilePath, Record<FileExport, FileProperties>>;
   elements: Record<Id, NodeElement>;
+  thirdParty: Record<string, unknown>;
 }
 
 export interface AstState extends NodeLookups {
