@@ -2,6 +2,7 @@ import {
   Identifier,
   JsxElement,
   JsxExpression,
+  JsxOpeningElement,
   JsxSelfClosingElement,
   Node,
   StringLiteral,
@@ -51,3 +52,48 @@ export const jsxValueName = (
 
   return null;
 };
+
+export const jsxTag = (node: JsxElement | JsxSelfClosingElement) => {
+  if (node.kind === SyntaxKind.JsxElement) {
+    return node.openingElement;
+  } else {
+    return node;
+  }
+};
+
+export const jsxTagName = (node: JsxSelfClosingElement | JsxOpeningElement) => {
+  let name = nodeName(node.tagName);
+  const { tagName } = node;
+
+  switch (tagName.kind) {
+    case SyntaxKind.Identifier:
+      name = tagName.escapedText as string;
+      break;
+    case SyntaxKind.PropertyAccessExpression:
+      name = nodeName(tagName.expression);
+      name += ".";
+      name += tagName.name.escapedText as string;
+      break;
+  }
+
+  return name;
+};
+
+export const jsxProps = (node: JsxSelfClosingElement | JsxOpeningElement) => {
+  const { attributes } = node;
+  const props = attributes.properties.reduce((acc, attr) => {
+    if (attr.kind !== SyntaxKind.JsxAttribute) {
+      return acc;
+    }
+
+    return {
+      ...acc,
+      [attr.name.escapedText as string]: jsxValueName(attr.initializer),
+    };
+  }, {});
+
+  return props;
+};
+
+export const nodeName = (node: Node) =>
+  (node as Identifier).escapedText as string;

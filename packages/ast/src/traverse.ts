@@ -1,10 +1,6 @@
 import ts, {
-  Identifier,
   ImportDeclaration,
   ImportSpecifier,
-  JsxElement,
-  JsxOpeningElement,
-  JsxSelfClosingElement,
   Node,
   SourceFile,
   SyntaxKind,
@@ -14,56 +10,12 @@ import {
   createNode,
   encodeId,
   interesting,
-  jsxValueName,
+  jsxTag,
+  jsxTagName,
+  nodeName,
   target,
 } from "./node.util";
 import { AstState, NodeLookups, NodeTree } from "./types";
-
-const saveJsxElement = (
-  node: JsxElement | JsxSelfClosingElement,
-  tree: NodeTree,
-  lookups: NodeLookups,
-  path: number[]
-) => {
-  let element: JsxSelfClosingElement | JsxOpeningElement;
-
-  if (node.kind === SyntaxKind.JsxElement) {
-    element = node.openingElement;
-  } else {
-    element = node;
-  }
-
-  let name = (element.tagName as Identifier).escapedText as string;
-  const { tagName, attributes } = element;
-
-  switch (tagName.kind) {
-    case SyntaxKind.Identifier:
-      name = tagName.escapedText as string;
-      break;
-    case SyntaxKind.PropertyAccessExpression:
-      name = (tagName.expression as Identifier).escapedText as string;
-      name += ".";
-      name += tagName.name.escapedText as string;
-      break;
-  }
-
-  const props = attributes.properties.reduce((acc, attr) => {
-    if (attr.kind !== SyntaxKind.JsxAttribute) {
-      return acc;
-    }
-
-    return {
-      ...acc,
-      [attr.name.escapedText as string]: jsxValueName(attr.initializer),
-    };
-  }, {});
-
-  const id = encodeId(name, path);
-  const savedNode = createNode(id);
-  lookups.elements[id] = { name };
-  tree.children.push(savedNode);
-  return savedNode;
-};
 
 let lastIdentifier: string | undefined;
 
@@ -82,7 +34,7 @@ const traverse = (
   node.forEachChild((childNode) => {
     // save name of component export
     if (childNode.kind === SyntaxKind.Identifier) {
-      lastIdentifier = (childNode as Identifier).escapedText as string;
+      lastIdentifier = nodeName(childNode);
     }
 
     if ([SyntaxKind.ImportDeclaration].includes(childNode.kind)) {
@@ -117,8 +69,15 @@ const traverse = (
         tree.children.push(parentNode);
         lastIdentifier = undefined;
       }
+
       const newPath = [...path, filteredIndex];
-      const newTree = saveJsxElement(childNode, parentNode, lookups, newPath);
+      const element = jsxTag(childNode);
+      const name = jsxTagName(element);
+      const id = encodeId(name, newPath);
+      const newTree = createNode(id);
+      lookups.elements[id] = { name };
+      parentNode.children.push(newTree);
+
       traverse(childNode, newTree, lookups, newPath);
       filteredIndex++;
     } else if (interesting(childNode)) {
@@ -149,29 +108,4 @@ export const traverseFromFile = (filePath: string): AstState => {
     ...lookups,
     hierarchy: nodeTree,
   };
-};
-
-const repeat = (str: string, times: number) =>
-  Array.from(new Array(times)).reduce((acc) => acc + str, "");
-
-const tab = (times: number) => repeat("  ", times);
-
-export const renderTreeText = (
-  tree: NodeTree,
-  elements: NodeLookups["elements"],
-  depth = 1
-): string => {
-  const el = elements[tree.id];
-  const name = el ? el.name : tree.id;
-  if (tree.children.length === 0) {
-    return `<${name} />`;
-  }
-  return `<${name}>\n${
-    tree.children
-      .map(
-        (child) =>
-          tab(depth) + renderTreeText(child, elements, depth + 1) + "\n"
-      )
-      .join("") + tab(depth - 1)
-  }</${name}>`;
 };
