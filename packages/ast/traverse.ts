@@ -17,20 +17,41 @@ const log = (...args: any[]) => {
   if (debug) console.log(...args);
 };
 
-const createNode = (
-  id: string,
-  element?: JsxElement | JsxSelfClosingElement
-) => ({
-  id,
-  element,
-  children: [],
-});
+type Id = string; // "Component-ANCESTRAL_ID"
+type Name = string; // "Component"
+type AncestralId = string; // "ANCESTRAL_ID"
+type FilePath = string; // "workspace/path/file.ts"
+type FileExport = Id;
 
 interface NodeTree {
-  id: string;
-  element?: JsxElement | JsxSelfClosingElement;
+  id: Id;
   children: NodeTree[];
 }
+
+interface FileProperties {
+  start: AncestralId;
+  end: AncestralId[];
+  uses: FilePath[];
+}
+
+interface NodeElement {
+  name: Name;
+  file?: FilePath;
+}
+
+interface Lookups {
+  files: Record<FilePath, Record<FileExport, FileProperties>>;
+  elements: Record<Id, NodeElement>;
+}
+
+interface State extends Lookups {
+  hierarchy: NodeTree;
+}
+
+const createNode = (id: Id) => ({
+  id,
+  children: [],
+});
 
 const interestingTypes = [
   SyntaxKind.ArrowFunction,
@@ -65,7 +86,8 @@ const jsxValueName = (node: JsxExpression | StringLiteral | undefined) => {
 
 const saveJsxElement = (
   node: JsxElement | JsxSelfClosingElement,
-  tree: NodeTree
+  tree: NodeTree,
+  lookups: Lookups
 ) => {
   let element: JsxSelfClosingElement | JsxOpeningElement;
 
@@ -100,14 +122,19 @@ const saveJsxElement = (
     };
   }, {});
 
-  const savedNode = createNode(id, node);
+  const savedNode = createNode(id);
+  lookups.elements[savedNode.id] = { name: id };
   tree.children.push(savedNode);
   return savedNode;
 };
 
 let lastIdentifier: string | undefined;
 
-const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
+const traverse = (
+  node: Node | SourceFile | undefined,
+  tree: NodeTree,
+  lookups: Lookups
+) => {
   if (!node) {
     log("! no node ! did you pass a valid entry file path?");
     process.exit(1);
@@ -144,18 +171,19 @@ const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
 
       if (lastIdentifier) {
         parentNode = createNode(lastIdentifier);
+        lookups.elements[parentNode.id] = { name: lastIdentifier };
         tree.children.push(parentNode);
         lastIdentifier = undefined;
       }
-      const newTree = saveJsxElement(childNode, parentNode);
-      traverse(childNode, newTree);
+      const newTree = saveJsxElement(childNode, parentNode, lookups);
+      traverse(childNode, newTree, lookups);
     } else if (interesting(childNode)) {
-      traverse(childNode, tree);
+      traverse(childNode, tree, lookups);
     }
   });
 };
 
-export const traverseFromFile = (filePath: string) => {
+export const traverseFromFile = (filePath: string): State => {
   const program = ts.createProgram([filePath], {
     noEmitOnError: true,
     noImplicitAny: false,
@@ -166,9 +194,17 @@ export const traverseFromFile = (filePath: string) => {
   const sourceFile = program.getSourceFile(filePath);
 
   const nodeTree = createNode("_root");
+  const lookups = {
+    files: {},
+    elements: {},
+  };
 
-  traverse(sourceFile, nodeTree);
-  return nodeTree;
+  traverse(sourceFile, nodeTree, lookups);
+
+  return {
+    ...lookups,
+    hierarchy: nodeTree,
+  };
 };
 
 const repeat = (str: string, times: number) =>
