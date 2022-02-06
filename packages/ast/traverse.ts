@@ -12,6 +12,11 @@ import ts, {
   SyntaxKind,
 } from "typescript";
 
+const debug = process.env.argv?.includes("DEBUG");
+const log = (...args: any[]) => {
+  if (debug) console.log(...args);
+};
+
 const createNode = (
   id: string,
   element?: JsxElement | JsxSelfClosingElement
@@ -84,7 +89,7 @@ const saveJsxElement = (
       break;
   }
 
-  console.log(SyntaxKind[element.tagName.kind]);
+  log(SyntaxKind[element.tagName.kind]);
   const props = attributes.properties.reduce((acc, attr) => {
     if (attr.kind !== SyntaxKind.JsxAttribute) {
       return acc;
@@ -96,7 +101,7 @@ const saveJsxElement = (
     };
   }, {});
 
-  console.log({ props });
+  log({ props });
 
   const savedNode = createNode(id, node);
   tree.children.push(savedNode);
@@ -107,7 +112,7 @@ let lastIdentifier: string | undefined;
 
 const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
   if (!node) {
-    console.log("! no node !");
+    log("! no node !");
     process.exit(1);
   }
 
@@ -129,7 +134,7 @@ const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
         bindings.push(singleImport);
       }
 
-      console.log("import", {
+      log("import", {
         bindings: bindings.map(
           (binding: ImportSpecifier) => binding.name.escapedText
         ),
@@ -146,10 +151,10 @@ const traverse = (node: Node | SourceFile | undefined, tree: NodeTree) => {
         lastIdentifier = undefined;
       }
       const newTree = saveJsxElement(childNode, parentNode);
-      console.log("saved", newTree.id);
+      log("saved", newTree.id);
       traverse(childNode, newTree);
     } else if (interesting(childNode)) {
-      console.log("hmm...", SyntaxKind[childNode.kind]);
+      log("hmm...", SyntaxKind[childNode.kind]);
       traverse(childNode, tree);
     }
   });

@@ -1,14 +1,14 @@
 import React from "react";
-import { ActionList } from "./ActionList";
+import { Provider as RRProvider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { DetailScreen } from "./DetailScreen";
-import { SettingsScreen } from "./SettingsScreen";
 
-import { Provider as RRProvider } from "react-redux";
-import { getStore } from "./ReduxStore";
-import { MenuButton } from "./MenuButton";
-import { SettingsProfileScreen } from "./SettingsProfileScreen";
+import { ActionList } from "./screens/ActionList";
+import { DetailScreen } from "./screens/DetailScreen";
+import { getStore } from "./other";
+import { MenuButton } from "./components";
+import { SettingsProfileScreen } from "./screens/SettingsProfileScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 

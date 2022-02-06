@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
-import { MenuButton } from "./MenuButton";
+import { MenuButton } from "../components";
 
 export const DetailScreen = ({ route, navigation }: any) => {
   const {

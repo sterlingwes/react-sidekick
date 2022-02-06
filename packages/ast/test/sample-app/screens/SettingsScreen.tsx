@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
-import { MenuButton } from "./MenuButton";
-import { clearProfile } from "./ReduxActions";
+import { MenuButton } from "../components/MenuButton";
+import { clearProfile } from "../other";
 
 export const SettingsScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();

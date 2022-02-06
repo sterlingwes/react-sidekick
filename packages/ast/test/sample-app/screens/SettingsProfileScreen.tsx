@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch } from "react-redux";
-import { MenuButton } from "./MenuButton";
-import { saveProfile } from "./ReduxActions";
+import { MenuButton } from "../components";
+import { saveProfile } from "../other";
 
 export const SettingsProfileScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
