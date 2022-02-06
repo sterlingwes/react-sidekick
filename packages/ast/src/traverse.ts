@@ -20,16 +20,11 @@ import { AstState, NodeLookups, NodeTree } from "./types";
 let lastIdentifier: string | undefined;
 
 const traverse = (
-  node: Node | SourceFile | undefined,
+  node: Node | SourceFile,
   tree: NodeTree,
   lookups: NodeLookups,
   path: number[]
 ) => {
-  if (!node) {
-    log("! no node ! did you pass a valid entry file path?");
-    process.exit(1);
-  }
-
   let filteredIndex = 0;
   node.forEachChild((childNode) => {
     // save name of component export
@@ -95,6 +90,10 @@ export const traverseFromFile = (filePath: string): AstState => {
   });
 
   const sourceFile = program.getSourceFile(filePath);
+
+  if (!sourceFile) {
+    throw new Error(`No SourceFile to traverse, is ${filePath} a valid path?`);
+  }
 
   const nodeTree = createNode("_root");
   const lookups = {
