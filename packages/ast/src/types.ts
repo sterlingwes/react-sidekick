@@ -1,6 +1,6 @@
 export type Id = string; // "Component-ANCESTRAL_ID"
 type Name = string; // "Component"
-type AncestralId = string; // "ANCESTRAL_ID"
+export type AncestralId = string; // "ANCESTRAL_ID"
 type FilePath = string; // "workspace/path/file.ts"
 type FileExport = Id;
 

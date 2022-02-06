@@ -7,7 +7,10 @@ import {
   StringLiteral,
   SyntaxKind,
 } from "typescript";
-import { Id } from "./types";
+import { AncestralId, Id } from "./types";
+
+export const encodeId = (name: string, ancestralPath: number[]): AncestralId =>
+  name + "-" + ancestralPath.map((index) => index.toString(36)).join(".");
 
 export const createNode = (id: Id) => ({
   id,

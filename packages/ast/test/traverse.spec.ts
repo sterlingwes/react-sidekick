@@ -10,7 +10,7 @@ describe("traverseFromFile", () => {
     });
 
     it("should represent the full component hierarchy", () => {
-      const renderedAst = renderTreeText(state.hierarchy);
+      const renderedAst = renderTreeText(state.hierarchy, state.elements);
       expect(renderedAst).toMatchInlineSnapshot(`
         "<_root>
           <Main>
@@ -33,12 +33,13 @@ describe("traverseFromFile", () => {
       it("should have keys with IDs for each unique component in the hierarchy", () => {
         const keys = Object.keys(state.elements);
         expect(keys).toEqual([
-          "Main",
-          "RRProvider",
-          "NavigationContainer",
-          "Stack.Navigator",
-          "Stack.Group",
-          "Stack.Screen",
+          "Main-0",
+          "RRProvider-0.0",
+          "NavigationContainer-0.0.0",
+          "Stack.Navigator-0.0.0.0",
+          "Stack.Group-0.0.0.0.0",
+          "Stack.Screen-0.0.0.0.0.0",
+          "Stack.Screen-0.0.0.0.0.1",
         ]);
       });
     });
