@@ -24,9 +24,11 @@ export const createNode = (id: Id) => ({
 const interestingTypes = [
   SyntaxKind.ArrowFunction,
   SyntaxKind.Block,
+  SyntaxKind.CallExpression,
   SyntaxKind.FirstStatement,
   SyntaxKind.JsxAttribute,
   SyntaxKind.JsxAttributes,
+  SyntaxKind.JsxExpression,
   SyntaxKind.ParenthesizedExpression,
   SyntaxKind.ReturnStatement,
   SyntaxKind.VariableDeclaration,

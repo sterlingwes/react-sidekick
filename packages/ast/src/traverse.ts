@@ -65,7 +65,6 @@ let lastNodeKind: SyntaxKind | undefined;
 const traverse = (options: TraverseInput) => {
   const { node, tree, lookups, path, crawlPaths, names, plugins } = options;
 
-  let filteredIndex = 0;
   node.forEachChild((childNode) => {
     lastNodeKind = currentNodeKind;
     currentNodeKind = childNode.kind;
@@ -116,8 +115,7 @@ const traverse = (options: TraverseInput) => {
       let parentNode = tree;
 
       if (lastIdentifier) {
-        path.push(filteredIndex);
-        filteredIndex = 0; // reset index for depth change
+        path.push(0);
         parentNode = saveElement({
           name: lastIdentifier,
           path,
@@ -128,7 +126,7 @@ const traverse = (options: TraverseInput) => {
         lastIdentifier = undefined;
       }
 
-      const newPath = [...path, filteredIndex];
+      const newPath = [...path, parentNode.children.length];
       const element = jsxTag(childNode);
       const name = jsxTagName(element);
 
@@ -165,7 +163,6 @@ const traverse = (options: TraverseInput) => {
         names,
         plugins,
       });
-      filteredIndex++;
     } else if (interesting(childNode)) {
       traverse({
         node: childNode,
@@ -176,6 +173,8 @@ const traverse = (options: TraverseInput) => {
         names,
         plugins,
       });
+      // } else if (childNode.kind === SyntaxKind.JsxExpression) {
+      //   log({ childNode });
     } else {
       skippedNodes.add(childNode.kind);
     }
