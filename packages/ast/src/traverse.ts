@@ -1,5 +1,4 @@
 import ts, {
-  Identifier,
   ImportDeclaration,
   ImportSpecifier,
   Node,

@@ -29,7 +29,10 @@ const interestingTypes = [
   SyntaxKind.JsxAttribute,
   SyntaxKind.JsxAttributes,
   SyntaxKind.JsxExpression,
+  SyntaxKind.JsxOpeningElement,
+  SyntaxKind.ObjectLiteralExpression,
   SyntaxKind.ParenthesizedExpression,
+  SyntaxKind.PropertyAssignment,
   SyntaxKind.ReturnStatement,
   SyntaxKind.VariableDeclaration,
   SyntaxKind.VariableDeclarationList,
@@ -53,10 +56,7 @@ export const possibleComponentExport = (
  * add any types here that would mark a part of the tree we're not
  * interested in traversing further
  */
-const ignoredTypes = [
-  SyntaxKind.JsxOpeningElement, // we get to this via JsxElement type
-  SyntaxKind.JsxClosingElement, // we get to this via JsxElement type
-];
+const ignoredTypes = [SyntaxKind.JsxClosingElement];
 
 export const ignored = (node: Node) => {
   return ignoredTypes.includes(node.kind);

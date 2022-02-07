@@ -19,6 +19,7 @@ describe("sample-app tests", () => {
           <RRProvider>
             <NavigationContainer>
               <Stack.Navigator>
+                <MenuButton />
                 <Stack.Screen />
                 <Stack.Group>
                   <Stack.Screen />
@@ -41,10 +42,11 @@ describe("sample-app tests", () => {
           "RRProvider-0.0",
           "NavigationContainer-0.0.0",
           "Stack.Navigator-0.0.0.0",
-          "Stack.Screen-0.0.0.0.0",
-          "Stack.Group-0.0.0.0.1",
-          "Stack.Screen-0.0.0.0.1.0",
-          "Stack.Screen-0.0.0.0.1.1",
+          "MenuButton-0.0.0.0.0",
+          "Stack.Screen-0.0.0.0.1",
+          "Stack.Group-0.0.0.0.2",
+          "Stack.Screen-0.0.0.0.2.0",
+          "Stack.Screen-0.0.0.0.2.1",
         ]
       `);
     });
