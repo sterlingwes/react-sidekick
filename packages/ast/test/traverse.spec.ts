@@ -1,12 +1,16 @@
 import { renderTreeText } from "../src/render";
-import { traverseFromFile } from "../src/traverse";
+import {
+  buildProgram,
+  traverseFromFile,
+  traverseProject,
+} from "../src/traverse";
 
 describe("sample-app tests", () => {
   const entryPath = "./packages/ast/test/sample-app/Main.tsx";
   let state: ReturnType<typeof traverseFromFile>;
 
   beforeEach(() => {
-    state = traverseFromFile(entryPath, {
+    state = traverseProject(entryPath, {
       plugins: [require("../src/libraries/react-navigation")],
     });
   });
@@ -45,6 +49,31 @@ describe("sample-app tests", () => {
           "MenuButton-0.0.0.0.0",
           "Stack.Screen-0.0.0.0.1",
           "Stack.Group-0.0.0.0.2",
+          "Stack.Screen-0.0.0.0.2.0",
+          "Stack.Screen-0.0.0.0.2.1",
+        ]
+      `);
+    });
+  });
+
+  describe("leafNodes lookup", () => {
+    beforeEach(() => {
+      const program = buildProgram(entryPath);
+      const sourceFile = program.getSourceFile(entryPath);
+      if (!sourceFile) throw new Error("No sourcefile!");
+
+      state = traverseFromFile(sourceFile, {
+        projectFiles: [entryPath],
+        program,
+      });
+    });
+
+    it("should have IDs in the set representing tree leaf nodes (no children)", () => {
+      const ids = Array.from(state.leafNodes);
+      expect(ids).toMatchInlineSnapshot(`
+        Array [
+          "MenuButton-0.0.0.0.0",
+          "Stack.Screen-0.0.0.0.1",
           "Stack.Screen-0.0.0.0.2.0",
           "Stack.Screen-0.0.0.0.2.1",
         ]

@@ -41,6 +41,7 @@ interface NodeElement {
 
 export interface NodeLookups {
   files: Record<FilePath, Record<FileExport, FileProperties>>;
+  leafNodes: Set<Id>;
   elements: Record<Id, NodeElement>;
   thirdParty: Record<string, unknown>;
 }

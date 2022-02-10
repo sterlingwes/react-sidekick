@@ -1,18 +1,21 @@
+import path from "path";
 import ts, {
   ImportDeclaration,
   ImportSpecifier,
+  JsxEmit,
   Node,
+  Path,
+  Program,
   SourceFile,
   SyntaxKind,
 } from "typescript";
 import { log } from "./debug.util";
-import { interestingCrawlPaths } from "./fs.util";
+import { findPath, interestingCrawlPaths } from "./fs.util";
 import {
   createNode,
   encodeId,
   ignored,
   interesting,
-  jsxProps,
   jsxTag,
   jsxTagName,
   nodeName,
@@ -23,6 +26,7 @@ import {
   AstState,
   ComponentName,
   CrawlPaths,
+  Id,
   NodeLookups,
   NodeTree,
   Plugin,
@@ -49,10 +53,12 @@ interface SaveInputs {
 const saveElement = ({ name, path, tree, lookups, names }: SaveInputs) => {
   names.add(name);
   const id = encodeId(name, path);
-  const parentNode = createNode(id);
+  const newNode = createNode(id);
   lookups.elements[id] = { name };
-  tree.children.push(parentNode);
-  return parentNode;
+  tree.children.push(newNode);
+  lookups.leafNodes.add(id);
+  lookups.leafNodes.delete(tree.id);
+  return newNode;
 };
 
 const skippedNodes = new Set<SyntaxKind>();
@@ -180,31 +186,67 @@ const traverse = (options: TraverseInput) => {
   });
 };
 
-interface TraverseOptions {
-  plugins: Plugin[];
+interface SharedOptions {
+  plugins?: Plugin[];
 }
 
-export const traverseFromFile = (
-  filePath: string,
-  options: TraverseOptions
-): AstState => {
-  const program = ts.createProgram([filePath], {
+interface TraverseOptions extends SharedOptions {
+  dirname?: string;
+  projectFiles: string[];
+  program: Program;
+}
+
+export const buildProgram = (projectRootPath: string) =>
+  ts.createProgram([projectRootPath], {
     noEmitOnError: true,
     noImplicitAny: false,
     target: ts.ScriptTarget.ES5,
     module: ts.ModuleKind.CommonJS,
+    jsx: JsxEmit.React,
   });
 
-  const sourceFile = program.getSourceFile(filePath);
+export const traverseProject = (
+  projectRootPath: string,
+  options: SharedOptions
+) => {
+  const dirname = path.dirname(projectRootPath);
+  const program = buildProgram(projectRootPath);
+
+  const projectFiles: string[] = program
+    .getSourceFiles()
+    // @ts-ignore
+    .map((file) => file.path)
+    .filter((filePath) => /node_modules/.test(filePath) === false);
+
+  log({ projectFiles });
+
+  const sourceFile = program.getSourceFile(projectRootPath);
 
   if (!sourceFile) {
-    throw new Error(`No SourceFile to traverse, is ${filePath} a valid path?`);
+    throw new Error(
+      `No SourceFile to traverse, is ${projectRootPath} a valid path?`
+    );
   }
+
+  return traverseFromFile(sourceFile, {
+    ...options,
+    dirname,
+    projectFiles,
+    program,
+  });
+};
+
+export const traverseFromFile = (
+  sourceFile: SourceFile,
+  options: TraverseOptions
+): AstState => {
+  const { projectFiles, dirname, program } = options;
 
   // lookups that persist across full system traversal
   const tree = createNode("_root");
-  const lookups = {
+  const lookups: NodeLookups = {
     files: {},
+    leafNodes: new Set<Id>(),
     elements: {},
     thirdParty: {},
   };
@@ -220,11 +262,30 @@ export const traverseFromFile = (
     path: [],
     crawlPaths,
     names,
-    plugins: options.plugins,
+    plugins: options.plugins ?? [],
   });
 
   const followableCrawlPaths = interestingCrawlPaths(crawlPaths, names);
   log({ followableCrawlPaths });
+
+  if (dirname && followableCrawlPaths.length) {
+    followableCrawlPaths.forEach((filePath) => {
+      const subPath = findPath(path.resolve(dirname, filePath));
+      if (!subPath) {
+        throw new Error(
+          `Exhausted possibilities resolving path to ${filePath} from ${dirname}`
+        );
+      }
+
+      const subSource = program.getSourceFile(subPath);
+      if (!subSource) {
+        throw new Error(`Failed to traverse to ${subPath}`);
+      }
+
+      const result = traverseFromFile(subSource, options);
+      log({ result });
+    });
+  }
 
   log({
     skippedNodes: Array.from(skippedNodes).map((kind) => SyntaxKind[kind]),
