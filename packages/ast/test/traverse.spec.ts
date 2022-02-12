@@ -26,8 +26,12 @@ describe("sample-app tests", () => {
                 <MenuButton />
                 <Stack.Screen />
                 <Stack.Group>
-                  <Stack.Screen />
-                  <Stack.Screen />
+                  <Stack.Screen>
+                    <SettingsScreen />
+                  </Stack.Screen>
+                  <Stack.Screen>
+                    <SettingsProfileScreen />
+                  </Stack.Screen>
                 </Stack.Group>
               </Stack.Navigator>
             </NavigationContainer>
@@ -50,7 +54,9 @@ describe("sample-app tests", () => {
           "Stack.Screen-0.0.0.0.1",
           "Stack.Group-0.0.0.0.2",
           "Stack.Screen-0.0.0.0.2.0",
+          "SettingsScreen-0.0.0.0.2.0.0",
           "Stack.Screen-0.0.0.0.2.1",
+          "SettingsProfileScreen-0.0.0.0.2.1.0",
         ]
       `);
     });
@@ -78,6 +84,45 @@ describe("sample-app tests", () => {
           "Stack.Screen-0.0.0.0.2.1",
         ]
       `);
+    });
+  });
+
+  describe("plugins", () => {
+    describe("react navigation", () => {
+      beforeEach(() => {
+        const program = buildProgram(entryPath);
+        const sourceFile = program.getSourceFile(entryPath);
+        if (!sourceFile) throw new Error("No sourcefile!");
+
+        state = traverseFromFile(sourceFile, {
+          plugins: [require("../src/libraries/react-navigation")],
+          projectFiles: [entryPath],
+          program,
+        });
+      });
+
+      it("should have its own state linking screen route names to component names", () => {
+        expect(Object.keys(state.thirdParty)).toEqual(["reactNavigation"]);
+        expect((state.thirdParty.reactNavigation as any).routes).toEqual({
+          Settings: "SettingsScreen",
+          SettingsProfile: "SettingsProfileScreen",
+        });
+        expect(
+          Array.from((state.thirdParty.reactNavigation as any).components)
+        ).toEqual(["SettingsScreen", "SettingsProfileScreen"]);
+      });
+
+      it("should change the leaf nodes in the main AST state", () => {
+        const ids = Array.from(state.leafNodes);
+        expect(ids).toMatchInlineSnapshot(`
+          Array [
+            "MenuButton-0.0.0.0.0",
+            "Stack.Screen-0.0.0.0.1",
+            "SettingsScreen-0.0.0.0.2.0.0",
+            "SettingsProfileScreen-0.0.0.0.2.1.0",
+          ]
+        `);
+      });
     });
   });
 });

@@ -8,7 +8,7 @@ import {
   StringLiteral,
   SyntaxKind,
 } from "typescript";
-import { AncestralId, Id } from "./types";
+import { AncestralId, ComponentName, Id, NodeLookups, NodeTree } from "./types";
 
 export const encodeId = (name: string, ancestralPath: number[]): AncestralId =>
   name + "-" + ancestralPath.map((index) => index.toString(36)).join(".");
@@ -131,3 +131,34 @@ export const jsxProps = (
 
 export const nodeName = (node: Node) =>
   (node as Identifier).escapedText as string;
+
+interface SaveInputs {
+  name: ComponentName;
+  path: number[];
+  tree: NodeTree;
+  lookups: NodeLookups;
+  names: Set<string>;
+}
+
+export const saveElement = ({
+  name,
+  path,
+  tree,
+  lookups,
+  names,
+}: SaveInputs) => {
+  names.add(name);
+  const newNodeId = encodeId(name, path);
+  const newNode = createNode(newNodeId);
+  lookups.elements[newNodeId] = { name };
+  tree.children.push(newNode);
+  lookups.leafNodes.add(newNodeId);
+  lookups.leafNodes.delete(tree.id);
+  return { newNode, newNodeId };
+};
+
+export const saveChildElement =
+  (inputs: Omit<SaveInputs, "name">) => (name: ComponentName) => {
+    const path = [...inputs.path, inputs.tree.children.length];
+    return saveElement({ ...inputs, path, name });
+  };

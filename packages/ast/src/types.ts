@@ -9,14 +9,27 @@ type Binding = string;
 export type CrawlPaths = Record<FilePath, Binding[]>;
 
 interface ComponentVisitorInput {
+  id: Id;
   name: ComponentName;
   element: JsxSelfClosingElement | JsxOpeningElement;
   tree: NodeTree;
   lookups: NodeLookups;
+  path: number[];
   names: Set<string>;
+  api: ComponentVisitorApi;
 }
 
-export type PluginVisitor = (input: ComponentVisitorInput) => void;
+interface ComponentVisitorApi {
+  saveElement: (name: ComponentName) => TreeChange;
+}
+
+interface TreeChange {
+  newNode?: NodeTree;
+}
+
+export type PluginVisitor = (
+  input: ComponentVisitorInput
+) => TreeChange | undefined;
 
 export interface Plugin {
   componentIds: string[];

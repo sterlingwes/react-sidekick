@@ -1,5 +1,5 @@
-import { jsxProps } from "../node.util";
-import { NodeLookups, PluginVisitor } from "../types";
+import { jsxProps, saveChildElement, saveElement } from "../node.util";
+import { NodeLookups, NodeTree, PluginVisitor } from "../types";
 
 export const componentIds = ["Stack.Screen"];
 
@@ -31,6 +31,7 @@ export const visitComponent: PluginVisitor = ({
   element,
   lookups,
   names,
+  api,
 }) => {
   if (name !== "Stack.Screen") {
     return;
@@ -43,5 +44,7 @@ export const visitComponent: PluginVisitor = ({
     navLookup.routes[props.name] = props.component;
     navLookup.components.add(props.component);
     names.add(props.component);
+
+    return api.saveElement(props.component);
   }
 };

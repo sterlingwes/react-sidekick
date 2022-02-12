@@ -20,6 +20,8 @@ import {
   jsxTagName,
   nodeName,
   possibleComponentExport,
+  saveChildElement,
+  saveElement,
   target,
 } from "./node.util";
 import {
@@ -41,25 +43,6 @@ interface TraverseInput {
   names: Set<string>;
   plugins: Plugin[];
 }
-
-interface SaveInputs {
-  name: ComponentName;
-  path: number[];
-  tree: NodeTree;
-  lookups: NodeLookups;
-  names: Set<string>;
-}
-
-const saveElement = ({ name, path, tree, lookups, names }: SaveInputs) => {
-  names.add(name);
-  const id = encodeId(name, path);
-  const newNode = createNode(id);
-  lookups.elements[id] = { name };
-  tree.children.push(newNode);
-  lookups.leafNodes.add(id);
-  lookups.leafNodes.delete(tree.id);
-  return newNode;
-};
 
 const skippedNodes = new Set<SyntaxKind>();
 
@@ -136,19 +119,29 @@ const traverse = (options: TraverseInput) => {
 
       if (lastIdentifier) {
         path.push(0);
-        parentNode = saveElement({
+        const { newNode } = saveElement({
           name: lastIdentifier,
           path,
           tree,
           lookups,
           names,
         });
+        parentNode = newNode;
         lastIdentifier = undefined;
       }
 
       const newPath = [...path, parentNode.children.length];
       const element = jsxTag(childNode);
       const name = jsxTagName(element);
+
+      const { newNode, newNodeId } = saveElement({
+        name,
+        path: newPath,
+        lookups,
+        names,
+        tree: parentNode,
+      });
+      let newTree: NodeTree = newNode;
 
       // TODO: need better way to match known lib components
       // need to check name export and normalize for renames / aliasing
@@ -157,22 +150,26 @@ const traverse = (options: TraverseInput) => {
       );
 
       if (plugin) {
-        plugin.visitComponent({
+        const pluginVisitorInputs = {
+          id: newNodeId,
           name,
           element,
-          tree: parentNode,
+          tree: newNode,
           lookups,
+          path: newPath,
           names,
+        };
+        const treeChange = plugin.visitComponent({
+          ...pluginVisitorInputs,
+          api: {
+            saveElement: saveChildElement(pluginVisitorInputs),
+          },
         });
-      }
 
-      const newTree = saveElement({
-        name,
-        path: newPath,
-        lookups,
-        names,
-        tree: parentNode,
-      });
+        if (treeChange?.newNode) {
+          newTree = treeChange.newNode;
+        }
+      }
 
       traverse({
         node: childNode,
