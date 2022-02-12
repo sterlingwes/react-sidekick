@@ -44,11 +44,13 @@ export const interesting = (node: Node) => {
 
 export const possibleComponentExport = (
   currentKind: SyntaxKind,
-  lastKind: SyntaxKind
+  lastKind: SyntaxKind,
+  siblingKinds: SyntaxKind[]
 ) => {
   return (
     lastKind === SyntaxKind.VariableDeclaration &&
-    currentKind === SyntaxKind.Identifier
+    currentKind === SyntaxKind.Identifier &&
+    siblingKinds.includes(SyntaxKind.ArrowFunction)
   );
 };
 

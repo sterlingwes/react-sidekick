@@ -70,6 +70,11 @@ let lastNodeKind: SyntaxKind | undefined;
 const traverse = (options: TraverseInput) => {
   const { node, tree, lookups, path, crawlPaths, names, plugins } = options;
 
+  const nodeSiblingKinds: SyntaxKind[] = [];
+  node.forEachChild((childNodeChild) => {
+    nodeSiblingKinds.push(childNodeChild.kind);
+  });
+
   node.forEachChild((childNode) => {
     lastNodeKind = currentNodeKind;
     currentNodeKind = childNode.kind;
@@ -80,12 +85,22 @@ const traverse = (options: TraverseInput) => {
     }
 
     // save name of likely component export
-    if (possibleComponentExport(childNode.kind, lastNodeKind ?? 0)) {
-      lastIdentifier = nodeName(childNode);
-      log({
-        lastIdentifier,
-        lastNodeKind: SyntaxKind[lastNodeKind ?? 0],
-      });
+    if (
+      possibleComponentExport(
+        childNode.kind,
+        lastNodeKind ?? 0,
+        nodeSiblingKinds
+      )
+    ) {
+      const nodeId = nodeName(childNode);
+      if (/^[A-Z]/.test(nodeId)) {
+        lastIdentifier = nodeId;
+        log({
+          lastIdentifier,
+          lastNodeKind: SyntaxKind[lastNodeKind ?? 0],
+          nodeSiblingKinds,
+        });
+      }
     }
 
     if ([SyntaxKind.ImportDeclaration].includes(childNode.kind)) {
