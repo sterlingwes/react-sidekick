@@ -24,7 +24,27 @@ describe("sample-app tests", () => {
             <NavigationContainer>
               <Stack.Navigator>
                 <MenuButton />
-                <Stack.Screen />
+                <Stack.Screen>
+                  <ActionList>
+                    <ActionList>
+                      <TouchableOpacity>
+                        <View>
+                          <Text />
+                        </View>
+                      </TouchableOpacity>
+                    </ActionList>
+                  </ActionList>
+                </Stack.Screen>
+                <Stack.Screen>
+                  <DetailScreen>
+                    <DetailScreen>
+                      <View>
+                        <Text />
+                        <Text />
+                      </View>
+                    </DetailScreen>
+                  </DetailScreen>
+                </Stack.Screen>
                 <Stack.Group>
                   <Stack.Screen>
                     <SettingsScreen>
@@ -76,25 +96,41 @@ describe("sample-app tests", () => {
           "Stack.Navigator-0.0.0.0",
           "MenuButton-0.0.0.0.0",
           "Stack.Screen-0.0.0.0.1",
-          "Stack.Group-0.0.0.0.2",
-          "Stack.Screen-0.0.0.0.2.0",
-          "SettingsScreen-0.0.0.0.2.0.0",
-          "Stack.Screen-0.0.0.0.2.1",
-          "SettingsProfileScreen-0.0.0.0.2.1.0",
-          "SettingsProfileScreen-0.0.0.0.2.1.0.0",
-          "View-0.0.0.0.2.1.0.0.0",
-          "Text-0.0.0.0.2.1.0.0.0.0",
-          "TextInput-0.0.0.0.2.1.0.0.0.1",
-          "TextInput-0.0.0.0.2.1.0.0.0.2",
-          "Text-0.0.0.0.2.1.0.0.0.3",
-          "SettingsScreen-0.0.0.0.2.0.0.0",
-          "SafeAreaView-0.0.0.0.2.0.0.0.0",
-          "Pressable-0.0.0.0.2.0.0.0.0.0",
-          "View-0.0.0.0.2.0.0.0.0.0.0",
-          "Text-0.0.0.0.2.0.0.0.0.0.0.0",
-          "Pressable-0.0.0.0.2.0.0.0.0.1",
-          "View-0.0.0.0.2.0.0.0.0.1.0",
-          "Text-0.0.0.0.2.0.0.0.0.1.0.0",
+          "ActionList-0.0.0.0.1.0",
+          "Stack.Screen-0.0.0.0.2",
+          "DetailScreen-0.0.0.0.2.0",
+          "Stack.Group-0.0.0.0.3",
+          "Stack.Screen-0.0.0.0.3.0",
+          "SettingsScreen-0.0.0.0.3.0.0",
+          "Stack.Screen-0.0.0.0.3.1",
+          "SettingsProfileScreen-0.0.0.0.3.1.0",
+          "ActionList-0.0.0.0.1.0.0",
+          "TouchableOpacity-0.0.0.0.1.0.0.0",
+          "View-0.0.0.0.1.0.0.0.0",
+          "Text-0.0.0.0.1.0.0.0.0.0",
+          "View-0.0.0.0.1.0.0.1",
+          "View-0.0.0.0.1.0.0.1.0",
+          "Text-0.0.0.0.1.0.0.1.0.0",
+          "FlatList-0.0.0.0.1.0.0.1.1",
+          "RefreshControl-0.0.0.0.1.0.0.1.1.0",
+          "DetailScreen-0.0.0.0.2.0.0",
+          "View-0.0.0.0.2.0.0.0",
+          "Text-0.0.0.0.2.0.0.0.0",
+          "Text-0.0.0.0.2.0.0.0.1",
+          "SettingsProfileScreen-0.0.0.0.3.1.0.0",
+          "View-0.0.0.0.3.1.0.0.0",
+          "Text-0.0.0.0.3.1.0.0.0.0",
+          "TextInput-0.0.0.0.3.1.0.0.0.1",
+          "TextInput-0.0.0.0.3.1.0.0.0.2",
+          "Text-0.0.0.0.3.1.0.0.0.3",
+          "SettingsScreen-0.0.0.0.3.0.0.0",
+          "SafeAreaView-0.0.0.0.3.0.0.0.0",
+          "Pressable-0.0.0.0.3.0.0.0.0.0",
+          "View-0.0.0.0.3.0.0.0.0.0.0",
+          "Text-0.0.0.0.3.0.0.0.0.0.0.0",
+          "Pressable-0.0.0.0.3.0.0.0.0.1",
+          "View-0.0.0.0.3.0.0.0.0.1.0",
+          "Text-0.0.0.0.3.0.0.0.0.1.0.0",
         ]
       `);
     });
@@ -118,8 +154,9 @@ describe("sample-app tests", () => {
         Array [
           "MenuButton-0.0.0.0.0",
           "Stack.Screen-0.0.0.0.1",
-          "Stack.Screen-0.0.0.0.2.0",
-          "Stack.Screen-0.0.0.0.2.1",
+          "Stack.Screen-0.0.0.0.2",
+          "Stack.Screen-0.0.0.0.3.0",
+          "Stack.Screen-0.0.0.0.3.1",
         ]
       `);
     });
@@ -142,12 +179,19 @@ describe("sample-app tests", () => {
       it("should have its own state linking screen route names to component names", () => {
         expect(Object.keys(state.thirdParty)).toEqual(["reactNavigation"]);
         expect((state.thirdParty.reactNavigation as any).routes).toEqual({
+          Detail: "DetailScreen",
+          Home: "ActionList",
           Settings: "SettingsScreen",
           SettingsProfile: "SettingsProfileScreen",
         });
         expect(
           Array.from((state.thirdParty.reactNavigation as any).components)
-        ).toEqual(["SettingsScreen", "SettingsProfileScreen"]);
+        ).toEqual([
+          "ActionList",
+          "DetailScreen",
+          "SettingsScreen",
+          "SettingsProfileScreen",
+        ]);
       });
 
       it("should change the leaf nodes in the main AST state", () => {
@@ -155,9 +199,10 @@ describe("sample-app tests", () => {
         expect(ids).toMatchInlineSnapshot(`
           Array [
             "MenuButton-0.0.0.0.0",
-            "Stack.Screen-0.0.0.0.1",
-            "SettingsScreen-0.0.0.0.2.0.0",
-            "SettingsProfileScreen-0.0.0.0.2.1.0",
+            "ActionList-0.0.0.0.1.0",
+            "DetailScreen-0.0.0.0.2.0",
+            "SettingsScreen-0.0.0.0.3.0.0",
+            "SettingsProfileScreen-0.0.0.0.3.1.0",
           ]
         `);
       });

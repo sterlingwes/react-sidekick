@@ -190,8 +190,6 @@ const traverse = (options: TraverseInput) => {
         names,
         plugins,
       });
-      // } else if (childNode.kind === SyntaxKind.JsxExpression) {
-      //   log({ childNode });
     } else {
       skippedNodes.add(childNode.kind);
     }
@@ -260,6 +258,10 @@ export const traverseProject = (
       result.leafNodes,
       result.hierarchy
     );
+
+    if (parentNodeName === "ActionList") {
+      console.log("ACTION", JSON.stringify(orphan.hierarchy.children, null, 2));
+    }
 
     // add node to main hierarchy and merge lookups
     if (leafMatch) {

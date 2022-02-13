@@ -12,17 +12,6 @@ import { SettingsScreen } from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
-const stackScreens = [
-  {
-    name: "Home",
-    component: ActionList,
-  },
-  {
-    name: "Detail",
-    component: DetailScreen,
-  },
-];
-
 const store = getStore();
 
 export const Main = () => {
@@ -39,9 +28,8 @@ export const Main = () => {
             ),
           })}
         >
-          {stackScreens.map((screenConfig) => (
-            <Stack.Screen key={screenConfig.name} {...screenConfig} />
-          ))}
+          <Stack.Screen name="Home" component={ActionList} />
+          <Stack.Screen name="Detail" component={DetailScreen} />
           <Stack.Group
             screenOptions={{
               presentation: "modal",
