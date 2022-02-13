@@ -13,8 +13,15 @@ import { AncestralId, ComponentName, Id, NodeLookups, NodeTree } from "./types";
 export const encodeId = (name: string, ancestralPath: number[]): AncestralId =>
   name + "-" + ancestralPath.map((index) => index.toString(36)).join(".");
 
-export const createNode = (id: Id) => ({
+const decodeId = (id: AncestralId): [string, number[]] => {
+  const [name, path] = id.split("-");
+  const pathParsed = path.split(".").map((part) => parseInt(part, 36));
+  return [name, pathParsed];
+};
+
+export const createNode = ({ id, name }: { id: Id; name: ComponentName }) => ({
   id,
+  name,
   children: [],
 });
 
@@ -149,7 +156,7 @@ export const saveElement = ({
 }: SaveInputs) => {
   names.add(name);
   const newNodeId = encodeId(name, path);
-  const newNode = createNode(newNodeId);
+  const newNode = createNode({ id: newNodeId, name });
   lookups.elements[newNodeId] = { name };
   tree.children.push(newNode);
   lookups.leafNodes.add(newNodeId);
@@ -162,3 +169,34 @@ export const saveChildElement =
     const path = [...inputs.path, inputs.tree.children.length];
     return saveElement({ ...inputs, path, name });
   };
+
+const findNode = (tree: NodeTree, id: AncestralId) => {
+  const [, path] = decodeId(id);
+  let current = tree;
+  while (path.length > 0) {
+    const index = path.shift();
+    if (index == null) break;
+    current = current.children[index];
+  }
+
+  return current;
+};
+
+export const getLeafNode = (
+  childTreeName: ComponentName,
+  treeLeafNodes: Set<string>,
+  tree: NodeTree
+) => {
+  const matchingLeafNodeId = Array.from(treeLeafNodes).find((nodeId) => {
+    const [name] = nodeId.split("-");
+    if (childTreeName === name) {
+      return true;
+    }
+  });
+
+  if (!matchingLeafNodeId) return;
+  return {
+    leafNode: findNode(tree, matchingLeafNodeId),
+    matchingLeafNodeId,
+  };
+};

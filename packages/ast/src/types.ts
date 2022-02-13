@@ -38,6 +38,7 @@ export interface Plugin {
 
 export interface NodeTree {
   id: Id;
+  name: ComponentName;
   children: NodeTree[];
 }
 
@@ -47,7 +48,7 @@ interface FileProperties {
   uses: FilePath[];
 }
 
-interface NodeElement {
+export interface NodeElement {
   name: ComponentName;
   file?: FilePath;
 }
@@ -61,4 +62,5 @@ export interface NodeLookups {
 
 export interface AstState extends NodeLookups {
   hierarchy: NodeTree;
+  orphanHierarchies: AstState[];
 }

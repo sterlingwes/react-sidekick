@@ -16,9 +16,9 @@ describe("sample-app tests", () => {
   });
 
   it("should represent the full component hierarchy", () => {
-    const renderedAst = renderTreeText(state.hierarchy, state.elements);
+    const renderedAst = renderTreeText(state.hierarchy);
     expect(renderedAst).toMatchInlineSnapshot(`
-      "<_root>
+      "<_Root>
         <Main>
           <RRProvider>
             <NavigationContainer>
@@ -27,17 +27,41 @@ describe("sample-app tests", () => {
                 <Stack.Screen />
                 <Stack.Group>
                   <Stack.Screen>
-                    <SettingsScreen />
+                    <SettingsScreen>
+                      <SettingsScreen>
+                        <SafeAreaView>
+                          <Pressable>
+                            <View>
+                              <Text />
+                            </View>
+                          </Pressable>
+                          <Pressable>
+                            <View>
+                              <Text />
+                            </View>
+                          </Pressable>
+                        </SafeAreaView>
+                      </SettingsScreen>
+                    </SettingsScreen>
                   </Stack.Screen>
                   <Stack.Screen>
-                    <SettingsProfileScreen />
+                    <SettingsProfileScreen>
+                      <SettingsProfileScreen>
+                        <View>
+                          <Text />
+                          <TextInput />
+                          <TextInput />
+                          <Text />
+                        </View>
+                      </SettingsProfileScreen>
+                    </SettingsProfileScreen>
                   </Stack.Screen>
                 </Stack.Group>
               </Stack.Navigator>
             </NavigationContainer>
           </RRProvider>
         </Main>
-      </_root>"
+      </_Root>"
     `);
   });
 
@@ -57,6 +81,20 @@ describe("sample-app tests", () => {
           "SettingsScreen-0.0.0.0.2.0.0",
           "Stack.Screen-0.0.0.0.2.1",
           "SettingsProfileScreen-0.0.0.0.2.1.0",
+          "SettingsProfileScreen-0.0.0.0.2.1.0.0",
+          "View-0.0.0.0.2.1.0.0.0",
+          "Text-0.0.0.0.2.1.0.0.0.0",
+          "TextInput-0.0.0.0.2.1.0.0.0.1",
+          "TextInput-0.0.0.0.2.1.0.0.0.2",
+          "Text-0.0.0.0.2.1.0.0.0.3",
+          "SettingsScreen-0.0.0.0.2.0.0.0",
+          "SafeAreaView-0.0.0.0.2.0.0.0.0",
+          "Pressable-0.0.0.0.2.0.0.0.0.0",
+          "View-0.0.0.0.2.0.0.0.0.0.0",
+          "Text-0.0.0.0.2.0.0.0.0.0.0.0",
+          "Pressable-0.0.0.0.2.0.0.0.0.1",
+          "View-0.0.0.0.2.0.0.0.0.1.0",
+          "Text-0.0.0.0.2.0.0.0.0.1.0.0",
         ]
       `);
     });

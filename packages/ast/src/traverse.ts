@@ -13,7 +13,7 @@ import { log } from "./debug.util";
 import { findPath, interestingCrawlPaths } from "./fs.util";
 import {
   createNode,
-  encodeId,
+  getLeafNode,
   ignored,
   interesting,
   jsxTag,
@@ -240,22 +240,70 @@ export const traverseProject = (
     );
   }
 
-  return traverseFromFile(sourceFile, {
-    ...options,
-    dirname,
-    projectFiles,
-    program,
+  const orphanHierarchies: AstState[] = [];
+
+  const result = traverseFromFile(
+    sourceFile,
+    {
+      ...options,
+      dirname,
+      projectFiles,
+      program,
+    },
+    orphanHierarchies
+  );
+
+  orphanHierarchies.forEach((orphan, orphanIndex) => {
+    const parentNodeName = orphan.hierarchy.children[0]?.name;
+    const leafMatch = getLeafNode(
+      parentNodeName,
+      result.leafNodes,
+      result.hierarchy
+    );
+
+    // add node to main hierarchy and merge lookups
+    if (leafMatch) {
+      const [, parentNodePath] = leafMatch.matchingLeafNodeId.split("-");
+
+      // leaf nodes
+      result.leafNodes.delete(leafMatch.matchingLeafNodeId);
+      orphan.leafNodes.forEach((orphanLeafNode) => {
+        const [orphanName, orphanPath] = orphanLeafNode.split("-");
+        const newLeafNode = `${orphanName}-${parentNodePath}.${orphanPath}`;
+        result.leafNodes.add(newLeafNode);
+      });
+      leafMatch.leafNode.children.push(orphan.hierarchy.children[0]);
+
+      // elements
+      result.elements = Object.keys(orphan.elements).reduce(
+        (acc, orphanElementId) => {
+          const [orphanName, orphanPath] = orphanElementId.split("-");
+          return {
+            ...acc,
+            [`${orphanName}-${parentNodePath}.${orphanPath}`]:
+              orphan.elements[orphanElementId],
+          };
+        },
+        result.elements
+      );
+    }
+
+    // @ts-expect-error releasing the object reference, array used only once
+    orphanHierarchies[orphanIndex] = null;
   });
+
+  return result;
 };
 
 export const traverseFromFile = (
   sourceFile: SourceFile,
-  options: TraverseOptions
+  options: TraverseOptions,
+  orphanHierarchies: AstState[] = []
 ): AstState => {
   const { projectFiles, dirname, program } = options;
 
   // lookups that persist across full system traversal
-  const tree = createNode("_root");
+  const tree = createNode({ id: "_root", name: "_Root" });
   const lookups: NodeLookups = {
     files: {},
     leafNodes: new Set<Id>(),
@@ -294,8 +342,8 @@ export const traverseFromFile = (
         throw new Error(`Failed to traverse to ${subPath}`);
       }
 
-      const result = traverseFromFile(subSource, options);
-      log({ result });
+      const result = traverseFromFile(subSource, options, orphanHierarchies);
+      orphanHierarchies.push(result);
     });
   }
 
@@ -306,5 +354,6 @@ export const traverseFromFile = (
   return {
     ...lookups,
     hierarchy: tree,
+    orphanHierarchies,
   };
 };
