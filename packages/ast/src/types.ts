@@ -4,7 +4,6 @@ export type Id = string; // "Component-ANCESTRAL_ID"
 export type ComponentName = string; // "Component"
 export type AncestralId = string; // "ANCESTRAL_ID"
 type FilePath = string; // "workspace/path/file.ts"
-type FileExport = Id;
 type Binding = string;
 export type CrawlPaths = Record<FilePath, Binding[]>;
 
@@ -54,7 +53,7 @@ export interface NodeElement {
 }
 
 export interface NodeLookups {
-  files: Record<FilePath, Record<FileExport, FileProperties>>;
+  files: {};
   leafNodes: Set<Id>;
   elements: Record<Id, NodeElement>;
   thirdParty: Record<string, unknown>;

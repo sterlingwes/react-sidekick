@@ -1,4 +1,5 @@
-import { renderTreeText } from "../src/render";
+import { DiagnosticTree } from "../src/diagnostic.util";
+import { renderDiagnosticText, renderTreeText } from "../src/render";
 import {
   buildProgram,
   traverseFromFile,
@@ -159,6 +160,25 @@ describe("sample-app tests", () => {
           "Stack.Screen-0.0.0.0.3.1",
         ]
       `);
+    });
+  });
+
+  describe("diagnostics", () => {
+    let state: ReturnType<typeof traverseProject>;
+    let diagnosticTree: DiagnosticTree;
+
+    beforeEach(() => {
+      diagnosticTree = { children: [] };
+
+      state = traverseProject(entryPath, {
+        runDiagnostic: true,
+      });
+    });
+
+    it("should populate the tree with reasons for node selection", () => {
+      if (!state.diagnosticTree) throw new Error("Expected diagnostic result");
+      const diagnostic = renderDiagnosticText(state.diagnosticTree);
+      expect(diagnostic).toMatchSnapshot();
     });
   });
 

@@ -1,0 +1,331 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sample-app tests diagnostics should populate the tree with reasons for node selection 1`] = `
+"<FirstToken Unknown>
+  <!---- packages/ast/test/sample-app/Main.tsx ---------------------------->
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <Identifier Skipped />
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <ImportDeclaration Skipped>
+      <ImportClause Skipped>
+        <NamedImports Skipped>
+          <ImportSpecifier Skipped>
+            <Identifier Skipped />
+          </ImportSpecifier Skipped>
+        </NamedImports Skipped>
+      </ImportClause Skipped>
+    </ImportDeclaration Skipped>
+    <FirstStatement Interesting>
+      <VariableDeclarationList Interesting>
+        <VariableDeclaration Interesting>
+          <Identifier Skipped />
+          <CallExpression Interesting>
+            <Identifier Skipped />
+          </CallExpression Interesting>
+        </VariableDeclaration Interesting>
+      </VariableDeclarationList Interesting>
+    </FirstStatement Interesting>
+    <FirstStatement Interesting>
+      <VariableDeclarationList Interesting>
+        <VariableDeclaration Interesting>
+          <Identifier Skipped />
+          <CallExpression Interesting>
+            <Identifier Skipped />
+          </CallExpression Interesting>
+        </VariableDeclaration Interesting>
+      </VariableDeclarationList Interesting>
+    </FirstStatement Interesting>
+    <FirstStatement Interesting>
+      <ExportKeyword Skipped />
+      <VariableDeclarationList Interesting>
+        <VariableDeclaration Interesting>
+          <Identifier Skipped />
+          <ArrowFunction Interesting>
+            <EqualsGreaterThanToken Skipped />
+            <Block Interesting>
+              <ReturnStatement Interesting>
+                <ParenthesizedExpression Interesting>
+                  <JsxElement (RRProvider-0.0) SavedElement>
+                    <JsxOpeningElement Interesting>
+                      <Identifier Skipped />
+                      <JsxAttributes Interesting>
+                        <JsxAttribute Interesting>
+                          <Identifier Skipped />
+                          <JsxExpression Interesting>
+                            <Identifier Skipped />
+                          </JsxExpression Interesting>
+                        </JsxAttribute Interesting>
+                      </JsxAttributes Interesting>
+                    </JsxOpeningElement Interesting>
+                    <JsxText Skipped />
+                    <JsxElement (NavigationContainer-0.0.0) SavedElement>
+                      <JsxOpeningElement Interesting>
+                        <Identifier Skipped />
+                        <JsxAttributes Interesting />
+                      </JsxOpeningElement Interesting>
+                      <JsxText Skipped />
+                      <JsxElement (Stack.Navigator-0.0.0.0) SavedElement>
+                        <JsxOpeningElement Interesting>
+                          <PropertyAccessExpression Skipped>
+                            <Identifier Skipped />
+                          </PropertyAccessExpression Skipped>
+                          <JsxAttributes Interesting>
+                            <JsxAttribute Interesting>
+                              <Identifier Skipped />
+                              <JsxExpression Interesting>
+                                <ArrowFunction Interesting>
+                                  <Parameter Skipped>
+                                    <ObjectBindingPattern Skipped>
+                                      <BindingElement Skipped>
+                                        <Identifier Skipped />
+                                      </BindingElement Skipped>
+                                    </ObjectBindingPattern Skipped>
+                                  </Parameter Skipped>
+                                  <EqualsGreaterThanToken Skipped />
+                                  <ParenthesizedExpression Interesting>
+                                    <ObjectLiteralExpression Interesting>
+                                      <PropertyAssignment Interesting>
+                                        <Identifier Skipped />
+                                        <ArrowFunction Interesting>
+                                          <EqualsGreaterThanToken Skipped />
+                                          <ParenthesizedExpression Interesting>
+                                            <JsxSelfClosingElement (MenuButton-0.0.0.0.0) SavedElement>
+                                              <Identifier Skipped />
+                                              <JsxAttributes Interesting>
+                                                <JsxAttribute Interesting>
+                                                  <Identifier Skipped />
+                                                  <StringLiteral Skipped />
+                                                </JsxAttribute Interesting>
+                                                <JsxAttribute Interesting>
+                                                  <Identifier Skipped />
+                                                  <JsxExpression Interesting>
+                                                    <ArrowFunction Interesting>
+                                                      <EqualsGreaterThanToken Skipped />
+                                                      <CallExpression Interesting>
+                                                        <PropertyAccessExpression Skipped>
+                                                          <Identifier Skipped />
+                                                        </PropertyAccessExpression Skipped>
+                                                        <StringLiteral Skipped />
+                                                      </CallExpression Interesting>
+                                                    </ArrowFunction Interesting>
+                                                  </JsxExpression Interesting>
+                                                </JsxAttribute Interesting>
+                                              </JsxAttributes Interesting>
+                                            </JsxSelfClosingElement (MenuButton-0.0.0.0.0) SavedElement>
+                                          </ParenthesizedExpression Interesting>
+                                        </ArrowFunction Interesting>
+                                      </PropertyAssignment Interesting>
+                                    </ObjectLiteralExpression Interesting>
+                                  </ParenthesizedExpression Interesting>
+                                </ArrowFunction Interesting>
+                              </JsxExpression Interesting>
+                            </JsxAttribute Interesting>
+                          </JsxAttributes Interesting>
+                        </JsxOpeningElement Interesting>
+                        <JsxText Skipped />
+                        <JsxSelfClosingElement (Stack.Screen-0.0.0.0.1) SavedElement>
+                          <PropertyAccessExpression Skipped>
+                            <Identifier Skipped />
+                          </PropertyAccessExpression Skipped>
+                          <JsxAttributes Interesting>
+                            <JsxAttribute Interesting>
+                              <Identifier Skipped />
+                              <StringLiteral Skipped />
+                            </JsxAttribute Interesting>
+                            <JsxAttribute Interesting>
+                              <Identifier Skipped />
+                              <JsxExpression Interesting>
+                                <Identifier Skipped />
+                              </JsxExpression Interesting>
+                            </JsxAttribute Interesting>
+                          </JsxAttributes Interesting>
+                        </JsxSelfClosingElement (Stack.Screen-0.0.0.0.1) SavedElement>
+                        <JsxText Skipped />
+                        <JsxSelfClosingElement (Stack.Screen-0.0.0.0.2) SavedElement>
+                          <PropertyAccessExpression Skipped>
+                            <Identifier Skipped />
+                          </PropertyAccessExpression Skipped>
+                          <JsxAttributes Interesting>
+                            <JsxAttribute Interesting>
+                              <Identifier Skipped />
+                              <StringLiteral Skipped />
+                            </JsxAttribute Interesting>
+                            <JsxAttribute Interesting>
+                              <Identifier Skipped />
+                              <JsxExpression Interesting>
+                                <Identifier Skipped />
+                              </JsxExpression Interesting>
+                            </JsxAttribute Interesting>
+                          </JsxAttributes Interesting>
+                        </JsxSelfClosingElement (Stack.Screen-0.0.0.0.2) SavedElement>
+                        <JsxText Skipped />
+                        <JsxElement (Stack.Group-0.0.0.0.3) SavedElement>
+                          <JsxOpeningElement Interesting>
+                            <PropertyAccessExpression Skipped>
+                              <Identifier Skipped />
+                            </PropertyAccessExpression Skipped>
+                            <JsxAttributes Interesting>
+                              <JsxAttribute Interesting>
+                                <Identifier Skipped />
+                                <JsxExpression Interesting>
+                                  <ObjectLiteralExpression Interesting>
+                                    <PropertyAssignment Interesting>
+                                      <Identifier Skipped />
+                                      <StringLiteral Skipped />
+                                    </PropertyAssignment Interesting>
+                                  </ObjectLiteralExpression Interesting>
+                                </JsxExpression Interesting>
+                              </JsxAttribute Interesting>
+                            </JsxAttributes Interesting>
+                          </JsxOpeningElement Interesting>
+                          <JsxText Skipped />
+                          <JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.0) SavedElement>
+                            <PropertyAccessExpression Skipped>
+                              <Identifier Skipped />
+                            </PropertyAccessExpression Skipped>
+                            <JsxAttributes Interesting>
+                              <JsxAttribute Interesting>
+                                <Identifier Skipped />
+                                <StringLiteral Skipped />
+                              </JsxAttribute Interesting>
+                              <JsxAttribute Interesting>
+                                <Identifier Skipped />
+                                <JsxExpression Interesting>
+                                  <Identifier Skipped />
+                                </JsxExpression Interesting>
+                              </JsxAttribute Interesting>
+                            </JsxAttributes Interesting>
+                          </JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.0) SavedElement>
+                          <JsxText Skipped />
+                          <JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.1) SavedElement>
+                            <PropertyAccessExpression Skipped>
+                              <Identifier Skipped />
+                            </PropertyAccessExpression Skipped>
+                            <JsxAttributes Interesting>
+                              <JsxAttribute Interesting>
+                                <Identifier Skipped />
+                                <StringLiteral Skipped />
+                              </JsxAttribute Interesting>
+                              <JsxAttribute Interesting>
+                                <Identifier Skipped />
+                                <JsxExpression Interesting>
+                                  <Identifier Skipped />
+                                </JsxExpression Interesting>
+                              </JsxAttribute Interesting>
+                            </JsxAttributes Interesting>
+                          </JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.1) SavedElement>
+                          <JsxText Skipped />
+                          <JsxClosingElement Skipped>
+                            <PropertyAccessExpression Skipped>
+                              <Identifier Skipped />
+                            </PropertyAccessExpression Skipped>
+                          </JsxClosingElement Skipped>
+                        </JsxElement (Stack.Group-0.0.0.0.3) SavedElement>
+                        <JsxText Skipped />
+                        <JsxClosingElement Skipped>
+                          <PropertyAccessExpression Skipped>
+                            <Identifier Skipped />
+                          </PropertyAccessExpression Skipped>
+                        </JsxClosingElement Skipped>
+                      </JsxElement (Stack.Navigator-0.0.0.0) SavedElement>
+                      <JsxText Skipped />
+                      <JsxClosingElement Skipped>
+                        <Identifier Skipped />
+                      </JsxClosingElement Skipped>
+                    </JsxElement (NavigationContainer-0.0.0) SavedElement>
+                    <JsxText Skipped />
+                    <JsxClosingElement Skipped>
+                      <Identifier Skipped />
+                    </JsxClosingElement Skipped>
+                  </JsxElement (RRProvider-0.0) SavedElement>
+                </ParenthesizedExpression Interesting>
+              </ReturnStatement Interesting>
+            </Block Interesting>
+          </ArrowFunction Interesting>
+        </VariableDeclaration Interesting>
+      </VariableDeclarationList Interesting>
+    </FirstStatement Interesting>
+    <EndOfFileToken Skipped />
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/components/index.ts ---------------------------->
+      <ExportDeclaration Skipped>
+        <StringLiteral Skipped />
+      </ExportDeclaration Skipped>
+      <EndOfFileToken Skipped />
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/components/index.ts ---------------------------->
+  </!---- packages/ast/test/sample-app/Main.tsx ---------------------------->
+</FirstToken Unknown>"
+`;

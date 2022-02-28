@@ -10,6 +10,13 @@ import ts, {
   SyntaxKind,
 } from "typescript";
 import { log } from "./debug.util";
+import {
+  DiagnosticReason,
+  DiagnosticTree,
+  trackDeadEndDiagnostic,
+  trackDiagnostic,
+  trackDiagnosticFileBoundary,
+} from "./diagnostic.util";
 import { findPath, interestingCrawlPaths } from "./fs.util";
 import {
   createNode,
@@ -42,6 +49,7 @@ interface TraverseInput {
   crawlPaths: CrawlPaths;
   names: Set<string>;
   plugins: Plugin[];
+  diagnosticTree?: DiagnosticTree;
 }
 
 const skippedNodes = new Set<SyntaxKind>();
@@ -51,7 +59,16 @@ let currentNodeKind: SyntaxKind | undefined;
 let lastNodeKind: SyntaxKind | undefined;
 
 const traverse = (options: TraverseInput) => {
-  const { node, tree, lookups, path, crawlPaths, names, plugins } = options;
+  const {
+    node,
+    tree,
+    lookups,
+    path,
+    crawlPaths,
+    names,
+    plugins,
+    diagnosticTree,
+  } = options;
 
   const nodeSiblingKinds: SyntaxKind[] = [];
   node.forEachChild((childNodeChild) => {
@@ -64,6 +81,7 @@ const traverse = (options: TraverseInput) => {
 
     if (ignored(childNode)) {
       log(`Ignored node of type ${SyntaxKind[childNode.kind]}`);
+      trackDeadEndDiagnostic(childNode, diagnosticTree);
       return;
     }
 
@@ -111,6 +129,7 @@ const traverse = (options: TraverseInput) => {
         crawlPaths[modulePath] = moduleBindings;
       }
 
+      trackDeadEndDiagnostic(childNode, diagnosticTree);
       return; // handled current node as import type
     }
 
@@ -171,6 +190,12 @@ const traverse = (options: TraverseInput) => {
         }
       }
 
+      const nextDiagnosticTree = trackDiagnostic(
+        DiagnosticReason.SavedElement,
+        childNode.kind,
+        diagnosticTree,
+        newNodeId
+      );
       traverse({
         node: childNode,
         tree: newTree,
@@ -179,8 +204,14 @@ const traverse = (options: TraverseInput) => {
         crawlPaths,
         names,
         plugins,
+        diagnosticTree: nextDiagnosticTree,
       });
     } else if (interesting(childNode)) {
+      const nextDiagnosticTree = trackDiagnostic(
+        DiagnosticReason.Interesting,
+        childNode.kind,
+        diagnosticTree
+      );
       traverse({
         node: childNode,
         tree,
@@ -189,8 +220,10 @@ const traverse = (options: TraverseInput) => {
         crawlPaths,
         names,
         plugins,
+        diagnosticTree: nextDiagnosticTree,
       });
     } else {
+      trackDeadEndDiagnostic(childNode, diagnosticTree);
       skippedNodes.add(childNode.kind);
     }
   });
@@ -198,12 +231,14 @@ const traverse = (options: TraverseInput) => {
 
 interface SharedOptions {
   plugins?: Plugin[];
+  runDiagnostic?: boolean;
 }
 
 interface TraverseOptions extends SharedOptions {
   dirname?: string;
   projectFiles: string[];
   program: Program;
+  diagnosticTree?: DiagnosticTree;
 }
 
 export const buildProgram = (projectRootPath: string) =>
@@ -239,6 +274,11 @@ export const traverseProject = (
   }
 
   const orphanHierarchies: AstState[] = [];
+  const diagnosticTree = options.runDiagnostic
+    ? {
+        children: [] as DiagnosticTree[],
+      }
+    : undefined;
 
   const result = traverseFromFile(
     sourceFile,
@@ -247,6 +287,7 @@ export const traverseProject = (
       dirname,
       projectFiles,
       program,
+      diagnosticTree,
     },
     orphanHierarchies
   );
@@ -260,7 +301,7 @@ export const traverseProject = (
     );
 
     if (parentNodeName === "ActionList") {
-      console.log("ACTION", JSON.stringify(orphan.hierarchy.children, null, 2));
+      log("ACTION", JSON.stringify(orphan.hierarchy.children, null, 2));
     }
 
     // add node to main hierarchy and merge lookups
@@ -294,7 +335,7 @@ export const traverseProject = (
     orphanHierarchies[orphanIndex] = null;
   });
 
-  return result;
+  return { ...result, diagnosticTree };
 };
 
 export const traverseFromFile = (
@@ -317,6 +358,11 @@ export const traverseFromFile = (
   const names = new Set<string>();
   const crawlPaths = {};
 
+  const diagnosticTree = trackDiagnosticFileBoundary(
+    sourceFile.fileName,
+    options.diagnosticTree
+  );
+
   traverse({
     node: sourceFile,
     tree,
@@ -325,6 +371,7 @@ export const traverseFromFile = (
     crawlPaths,
     names,
     plugins: options.plugins ?? [],
+    diagnosticTree,
   });
 
   const followableCrawlPaths = interestingCrawlPaths(crawlPaths, names);
@@ -344,7 +391,11 @@ export const traverseFromFile = (
         throw new Error(`Failed to traverse to ${subPath}`);
       }
 
-      const result = traverseFromFile(subSource, options, orphanHierarchies);
+      const result = traverseFromFile(
+        subSource,
+        { ...options, diagnosticTree },
+        orphanHierarchies
+      );
       orphanHierarchies.push(result);
     });
   }
