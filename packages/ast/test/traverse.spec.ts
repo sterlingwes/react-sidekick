@@ -172,6 +172,7 @@ describe("sample-app tests", () => {
 
       state = traverseProject(entryPath, {
         runDiagnostic: true,
+        plugins: [require("../src/libraries/react-navigation")],
       });
     });
 
