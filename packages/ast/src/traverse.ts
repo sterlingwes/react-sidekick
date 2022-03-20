@@ -1,11 +1,8 @@
 import path from "path";
-import ts, {
+import {
   ImportDeclaration,
   ImportSpecifier,
-  JsxEmit,
   Node,
-  Path,
-  Program,
   SourceFile,
   SyntaxKind,
 } from "typescript";
@@ -31,14 +28,16 @@ import {
   saveElement,
   target,
 } from "./node.util";
+import { buildProgram } from "./program";
 import {
   AstState,
-  ComponentName,
   CrawlPaths,
   Id,
   NodeLookups,
   NodeTree,
   Plugin,
+  SharedOptions,
+  TraverseOptions,
 } from "./types";
 
 interface TraverseInput {
@@ -229,33 +228,12 @@ const traverse = (options: TraverseInput) => {
   });
 };
 
-interface SharedOptions {
-  plugins?: Plugin[];
-  runDiagnostic?: boolean;
-}
-
-interface TraverseOptions extends SharedOptions {
-  dirname?: string;
-  projectFiles: string[];
-  program: Program;
-  diagnosticTree?: DiagnosticTree;
-}
-
-export const buildProgram = (projectRootPath: string) =>
-  ts.createProgram([projectRootPath], {
-    noEmitOnError: true,
-    noImplicitAny: false,
-    target: ts.ScriptTarget.ES5,
-    module: ts.ModuleKind.CommonJS,
-    jsx: JsxEmit.React,
-  });
-
-export const traverseProject = (
+export const traverseProject = async (
   projectRootPath: string,
   options: SharedOptions
 ) => {
   const dirname = path.dirname(projectRootPath);
-  const program = buildProgram(projectRootPath);
+  const program = await buildProgram(projectRootPath, options.compilerOptions);
 
   const projectFiles: string[] = program
     .getSourceFiles()
@@ -280,7 +258,7 @@ export const traverseProject = (
       }
     : undefined;
 
-  const result = traverseFromFile(
+  const result = await traverseFromFile(
     sourceFile,
     {
       ...options,
@@ -338,11 +316,11 @@ export const traverseProject = (
   return { ...result, diagnosticTree };
 };
 
-export const traverseFromFile = (
+export const traverseFromFile = async (
   sourceFile: SourceFile,
   options: TraverseOptions,
   orphanHierarchies: AstState[] = []
-): AstState => {
+): Promise<AstState> => {
   const { projectFiles, dirname, program } = options;
 
   // lookups that persist across full system traversal
@@ -378,26 +356,30 @@ export const traverseFromFile = (
   log({ followableCrawlPaths });
 
   if (dirname && followableCrawlPaths.length) {
-    followableCrawlPaths.forEach((filePath) => {
-      const subPath = findPath(path.resolve(dirname, filePath));
-      if (!subPath) {
-        throw new Error(
-          `Exhausted possibilities resolving path to ${filePath} from ${dirname}`
-        );
-      }
+    await followableCrawlPaths.reduce((chain, filePath) => {
+      return chain.then(() => {
+        return findPath(path.resolve(dirname, filePath)).then((subPath) => {
+          if (!subPath) {
+            throw new Error(
+              `Exhausted possibilities resolving path to ${filePath} from ${dirname}`
+            );
+          }
 
-      const subSource = program.getSourceFile(subPath);
-      if (!subSource) {
-        throw new Error(`Failed to traverse to ${subPath}`);
-      }
+          const subSource = program.getSourceFile(subPath);
+          if (!subSource) {
+            throw new Error(`Failed to traverse to ${subPath}`);
+          }
 
-      const result = traverseFromFile(
-        subSource,
-        { ...options, diagnosticTree },
-        orphanHierarchies
-      );
-      orphanHierarchies.push(result);
-    });
+          return traverseFromFile(
+            subSource,
+            { ...options, diagnosticTree },
+            orphanHierarchies
+          ).then((result) => {
+            orphanHierarchies.push(result);
+          });
+        });
+      });
+    }, Promise.resolve() as Promise<unknown>);
   }
 
   log({

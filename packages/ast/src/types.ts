@@ -1,4 +1,5 @@
-import { JsxOpeningElement, JsxSelfClosingElement, Node } from "typescript";
+import { JsxOpeningElement, JsxSelfClosingElement, Program } from "typescript";
+import { DiagnosticTree } from "./diagnostic.util";
 
 export type Id = string; // "Component-ANCESTRAL_ID"
 export type ComponentName = string; // "Component"
@@ -62,4 +63,21 @@ export interface NodeLookups {
 export interface AstState extends NodeLookups {
   hierarchy: NodeTree;
   orphanHierarchies: AstState[];
+}
+
+export interface CompilerOptions {
+  virtualFs: boolean;
+}
+
+export interface SharedOptions {
+  plugins?: Plugin[];
+  runDiagnostic?: boolean;
+  compilerOptions?: CompilerOptions;
+}
+
+export interface TraverseOptions extends SharedOptions {
+  dirname?: string;
+  projectFiles: string[];
+  program: Program;
+  diagnosticTree?: DiagnosticTree;
 }

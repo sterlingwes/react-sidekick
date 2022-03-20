@@ -10,5 +10,8 @@
     "clean": "rimraf ./dist",
     "build": "yarn clean && tsc"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "@ts-morph/bootstrap": "^0.13.0"
+  }
 }

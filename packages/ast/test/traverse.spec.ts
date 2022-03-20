@@ -1,17 +1,14 @@
 import { DiagnosticTree } from "../src/diagnostic.util";
+import { buildProgram } from "../src/program";
 import { renderDiagnosticText, renderTreeText } from "../src/render";
-import {
-  buildProgram,
-  traverseFromFile,
-  traverseProject,
-} from "../src/traverse";
+import { traverseFromFile, traverseProject } from "../src/traverse";
 
 describe("sample-app tests", () => {
   const entryPath = "./packages/ast/test/sample-app/Main.tsx";
-  let state: ReturnType<typeof traverseFromFile>;
+  let state: Awaited<ReturnType<typeof traverseFromFile>>;
 
-  beforeEach(() => {
-    state = traverseProject(entryPath, {
+  beforeEach(async () => {
+    state = await traverseProject(entryPath, {
       plugins: [require("../src/libraries/react-navigation")],
     });
   });
@@ -138,12 +135,12 @@ describe("sample-app tests", () => {
   });
 
   describe("leafNodes lookup", () => {
-    beforeEach(() => {
-      const program = buildProgram(entryPath);
+    beforeEach(async () => {
+      const program = await buildProgram(entryPath);
       const sourceFile = program.getSourceFile(entryPath);
       if (!sourceFile) throw new Error("No sourcefile!");
 
-      state = traverseFromFile(sourceFile, {
+      state = await traverseFromFile(sourceFile, {
         projectFiles: [entryPath],
         program,
       });
@@ -163,14 +160,50 @@ describe("sample-app tests", () => {
     });
   });
 
+  describe("virtual fs program", () => {
+    let nonVirtualState: Awaited<ReturnType<typeof traverseFromFile>>;
+    let virtualState: Awaited<ReturnType<typeof traverseFromFile>>;
+
+    beforeEach(async () => {
+      nonVirtualState = await traverseProject(entryPath, {
+        plugins: [require("../src/libraries/react-navigation")],
+      });
+
+      virtualState = await traverseProject(entryPath, {
+        plugins: [require("../src/libraries/react-navigation")],
+        compilerOptions: {
+          virtualFs: true,
+        },
+      });
+    });
+
+    // beforeEach(async () => {
+    //   const program = await buildProgram(entryPath, { virtualFs: true });
+    //   const sourceFile = program.getSourceFile(entryPath);
+    //   if (!sourceFile) throw new Error("No sourcefile!");
+
+    //   state = await traverseFromFile(sourceFile, {
+    //     projectFiles: [entryPath],
+    //     program,
+    //   });
+    // });
+
+    it("should complete traversal & build the same hierarchy as non-virtual", () => {
+      const renderedVirtualState = renderTreeText(virtualState.hierarchy);
+      const renderedNonVirtualState = renderTreeText(nonVirtualState.hierarchy);
+
+      expect(renderedNonVirtualState).toEqual(renderedVirtualState);
+    });
+  });
+
   describe("diagnostics", () => {
-    let state: ReturnType<typeof traverseProject>;
+    let state: Awaited<ReturnType<typeof traverseProject>>;
     let diagnosticTree: DiagnosticTree;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       diagnosticTree = { children: [] };
 
-      state = traverseProject(entryPath, {
+      state = await traverseProject(entryPath, {
         runDiagnostic: true,
         plugins: [require("../src/libraries/react-navigation")],
       });
@@ -185,12 +218,12 @@ describe("sample-app tests", () => {
 
   describe("plugins", () => {
     describe("react navigation", () => {
-      beforeEach(() => {
-        const program = buildProgram(entryPath);
+      beforeEach(async () => {
+        const program = await buildProgram(entryPath);
         const sourceFile = program.getSourceFile(entryPath);
         if (!sourceFile) throw new Error("No sourcefile!");
 
-        state = traverseFromFile(sourceFile, {
+        state = await traverseFromFile(sourceFile, {
           plugins: [require("../src/libraries/react-navigation")],
           projectFiles: [entryPath],
           program,

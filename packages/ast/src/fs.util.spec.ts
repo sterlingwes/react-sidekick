@@ -5,34 +5,36 @@ describe("fs utils", () => {
   describe("findPath", () => {
     describe("with tsx extension match", () => {
       beforeEach(() => {
-        jest.spyOn(fs, "accessSync").mockImplementation((path) => {
+        jest.spyOn(fs, "access").mockImplementation((path, callback) => {
           if (path.toString().endsWith(".tsx")) {
-            return undefined;
+            callback(null);
+            return;
           }
 
-          throw new Error("No file");
+          callback(new Error("No file"));
         });
       });
 
-      it("should return that path", () => {
-        const path = findPath("/my/path/components/MyComponent");
+      it("should return that path", async () => {
+        const path = await findPath("/my/path/components/MyComponent");
         expect(path).toEqual("/my/path/components/MyComponent.tsx");
       });
     });
 
     describe("with index file match", () => {
       beforeEach(() => {
-        jest.spyOn(fs, "accessSync").mockImplementation((path) => {
+        jest.spyOn(fs, "access").mockImplementation((path, callback) => {
           if (path.toString().endsWith("/index.ts")) {
-            return undefined;
+            callback(null);
+            return;
           }
 
-          throw new Error("No file");
+          callback(new Error("No file"));
         });
       });
 
-      it("should return that path", () => {
-        const path = findPath("/my/path/components");
+      it("should return that path", async () => {
+        const path = await findPath("/my/path/components");
         expect(path).toEqual("/my/path/components/index.ts");
       });
     });
