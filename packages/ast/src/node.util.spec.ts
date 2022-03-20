@@ -9,14 +9,17 @@ describe("node util", () => {
       const parentHierarchy = {
         id: "root",
         name: "Root",
+        fileId: 0,
         children: [
           {
             id: "Parent-0",
             name: "Parent",
+            fileId: 1,
             children: [
               {
                 id: "TopComponent-0.0",
                 name: "TopComponent",
+                fileId: 1,
                 children: [],
               },
             ],
@@ -33,6 +36,7 @@ describe("node util", () => {
       expect(node).toEqual({
         leafNode: {
           children: [],
+          fileId: 1,
           id: "TopComponent-0.0",
           name: "TopComponent",
         },

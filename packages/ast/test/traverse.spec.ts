@@ -4,6 +4,7 @@ import { renderDiagnosticText, renderTreeText } from "../src/render";
 import { traverseFromFile, traverseProject } from "../src/traverse";
 
 describe("sample-app tests", () => {
+  const dirname = "./packages/ast/test/sample-app";
   const entryPath = "./packages/ast/test/sample-app/Main.tsx";
   let state: Awaited<ReturnType<typeof traverseFromFile>>;
 
@@ -83,6 +84,19 @@ describe("sample-app tests", () => {
     `);
   });
 
+  describe("files", () => {
+    it("should annotate nodes with file Ids used in files lookup", () => {
+      expect(state.files).toEqual({
+        "1": "packages/ast/test/sample-app/Main.tsx",
+        "2": "./packages/ast/test/sample-app/screens/ActionList.tsx",
+        "3": "./packages/ast/test/sample-app/screens/DetailScreen.tsx",
+        "4": "./packages/ast/test/sample-app/components/index.ts",
+        "5": "./packages/ast/test/sample-app/screens/SettingsProfileScreen.tsx",
+        "6": "./packages/ast/test/sample-app/screens/SettingsScreen.tsx",
+      });
+    });
+  });
+
   describe("elements lookup", () => {
     it("should have keys with IDs for each unique component in the hierarchy", () => {
       const keys = Object.keys(state.elements);
@@ -143,6 +157,7 @@ describe("sample-app tests", () => {
       state = await traverseFromFile(sourceFile, {
         projectFiles: [entryPath],
         program,
+        dirname,
       });
     });
 
@@ -161,35 +176,20 @@ describe("sample-app tests", () => {
   });
 
   describe("virtual fs program", () => {
-    let nonVirtualState: Awaited<ReturnType<typeof traverseFromFile>>;
-    let virtualState: Awaited<ReturnType<typeof traverseFromFile>>;
-
-    beforeEach(async () => {
-      nonVirtualState = await traverseProject(entryPath, {
-        plugins: [require("../src/libraries/react-navigation")],
-      });
-
-      virtualState = await traverseProject(entryPath, {
+    it("should complete traversal & build the same hierarchy as non-virtual", async () => {
+      const virtualState = await traverseProject(entryPath, {
         plugins: [require("../src/libraries/react-navigation")],
         compilerOptions: {
           virtualFs: true,
         },
       });
-    });
 
-    // beforeEach(async () => {
-    //   const program = await buildProgram(entryPath, { virtualFs: true });
-    //   const sourceFile = program.getSourceFile(entryPath);
-    //   if (!sourceFile) throw new Error("No sourcefile!");
-
-    //   state = await traverseFromFile(sourceFile, {
-    //     projectFiles: [entryPath],
-    //     program,
-    //   });
-    // });
-
-    it("should complete traversal & build the same hierarchy as non-virtual", () => {
       const renderedVirtualState = renderTreeText(virtualState.hierarchy);
+
+      const nonVirtualState = await traverseProject(entryPath, {
+        plugins: [require("../src/libraries/react-navigation")],
+      });
+
       const renderedNonVirtualState = renderTreeText(nonVirtualState.hierarchy);
 
       expect(renderedNonVirtualState).toEqual(renderedVirtualState);
@@ -227,6 +227,7 @@ describe("sample-app tests", () => {
           plugins: [require("../src/libraries/react-navigation")],
           projectFiles: [entryPath],
           program,
+          dirname,
         });
       });
 

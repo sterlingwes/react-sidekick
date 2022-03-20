@@ -44,3 +44,13 @@ export const findPath = async (filePath: string) => {
 
   return asyncFindExtensionMatch(extensions, filePath);
 };
+
+export const pathAsRelativeToRoot = (dirname: string, path: string) => {
+  const rootPathStartIndex = path.indexOf(dirname.slice(2));
+  let relativeRootPath = path;
+  if (rootPathStartIndex > 0) {
+    relativeRootPath = `./${path.slice(rootPathStartIndex)}`;
+  }
+
+  return relativeRootPath;
+};

@@ -19,10 +19,19 @@ const decodeId = (id: AncestralId): [string, number[]] => {
   return [name, pathParsed];
 };
 
-export const createNode = ({ id, name }: { id: Id; name: ComponentName }) => ({
+export const createNode = ({
+  id,
+  name,
+  fileId,
+}: {
+  id: Id;
+  name: ComponentName;
+  fileId: number;
+}) => ({
   id,
   name,
   children: [],
+  fileId,
 });
 
 /**
@@ -143,6 +152,7 @@ interface SaveInputs {
   name: ComponentName;
   path: number[];
   tree: NodeTree;
+  fileId: number;
   lookups: NodeLookups;
   names: Set<string>;
 }
@@ -151,12 +161,13 @@ export const saveElement = ({
   name,
   path,
   tree,
+  fileId,
   lookups,
   names,
 }: SaveInputs) => {
   names.add(name);
   const newNodeId = encodeId(name, path);
-  const newNode = createNode({ id: newNodeId, name });
+  const newNode = createNode({ id: newNodeId, name, fileId });
   lookups.elements[newNodeId] = { name };
   tree.children.push(newNode);
   lookups.leafNodes.add(newNodeId);

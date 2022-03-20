@@ -14,7 +14,11 @@ import {
   trackDiagnostic,
   trackDiagnosticFileBoundary,
 } from "./diagnostic.util";
-import { findPath, interestingCrawlPaths } from "./fs.util";
+import {
+  findPath,
+  interestingCrawlPaths,
+  pathAsRelativeToRoot,
+} from "./fs.util";
 import {
   createNode,
   getLeafNode,
@@ -43,6 +47,7 @@ import {
 interface TraverseInput {
   node: Node | SourceFile;
   tree: NodeTree;
+  fileId: number;
   lookups: NodeLookups;
   path: number[];
   crawlPaths: CrawlPaths;
@@ -61,6 +66,7 @@ const traverse = (options: TraverseInput) => {
   const {
     node,
     tree,
+    fileId,
     lookups,
     path,
     crawlPaths,
@@ -140,6 +146,7 @@ const traverse = (options: TraverseInput) => {
         const { newNode } = saveElement({
           name: lastIdentifier,
           path,
+          fileId,
           tree,
           lookups,
           names,
@@ -155,6 +162,7 @@ const traverse = (options: TraverseInput) => {
       const { newNode, newNodeId } = saveElement({
         name,
         path: newPath,
+        fileId,
         lookups,
         names,
         tree: parentNode,
@@ -173,6 +181,7 @@ const traverse = (options: TraverseInput) => {
           name,
           element,
           tree: newNode,
+          fileId,
           lookups,
           path: newPath,
           names,
@@ -198,6 +207,7 @@ const traverse = (options: TraverseInput) => {
       traverse({
         node: childNode,
         tree: newTree,
+        fileId,
         lookups,
         path: newPath,
         crawlPaths,
@@ -214,6 +224,7 @@ const traverse = (options: TraverseInput) => {
       traverse({
         node: childNode,
         tree,
+        fileId,
         lookups,
         path,
         crawlPaths,
@@ -324,9 +335,9 @@ export const traverseFromFile = async (
   const { projectFiles, dirname, program } = options;
 
   // lookups that persist across full system traversal
-  const tree = createNode({ id: "_root", name: "_Root" });
+  const tree = createNode({ id: "_root", name: "_Root", fileId: 0 });
   const lookups: NodeLookups = {
-    files: {},
+    files: options.nodeFiles ?? {},
     leafNodes: new Set<Id>(),
     elements: {},
     thirdParty: {},
@@ -341,9 +352,13 @@ export const traverseFromFile = async (
     options.diagnosticTree
   );
 
+  const fileId = Object.keys(lookups.files).length + 1;
+  lookups.files[fileId] = pathAsRelativeToRoot(dirname, sourceFile.fileName);
+
   traverse({
     node: sourceFile,
     tree,
+    fileId,
     lookups,
     path: [],
     crawlPaths,
@@ -365,14 +380,15 @@ export const traverseFromFile = async (
             );
           }
 
-          const subSource = program.getSourceFile(subPath);
+          const relativeRootPath = pathAsRelativeToRoot(dirname, subPath);
+          const subSource = program.getSourceFile(relativeRootPath);
           if (!subSource) {
-            throw new Error(`Failed to traverse to ${subPath}`);
+            throw new Error(`Failed to traverse to ${relativeRootPath}`);
           }
 
           return traverseFromFile(
             subSource,
-            { ...options, diagnosticTree },
+            { ...options, nodeFiles: lookups.files, diagnosticTree },
             orphanHierarchies
           ).then((result) => {
             orphanHierarchies.push(result);

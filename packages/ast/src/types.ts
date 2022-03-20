@@ -40,6 +40,7 @@ export interface NodeTree {
   id: Id;
   name: ComponentName;
   children: NodeTree[];
+  fileId: number;
 }
 
 interface FileProperties {
@@ -54,7 +55,7 @@ export interface NodeElement {
 }
 
 export interface NodeLookups {
-  files: {};
+  files: Record<number, string>;
   leafNodes: Set<Id>;
   elements: Record<Id, NodeElement>;
   thirdParty: Record<string, unknown>;
@@ -76,8 +77,9 @@ export interface SharedOptions {
 }
 
 export interface TraverseOptions extends SharedOptions {
-  dirname?: string;
+  dirname: string;
   projectFiles: string[];
+  nodeFiles?: Record<number, string>;
   program: Program;
   diagnosticTree?: DiagnosticTree;
 }
