@@ -13,7 +13,8 @@ const readFilePromise = (path: string) =>
 
 const directoryOfInterest = (dirName: string) =>
   dirName !== "node_modules" && !dirName.startsWith("__");
-const fileOfInterest = (fileName: string) => fileName.endsWith(".tsx");
+const fileOfInterest = (fileName: string) =>
+  fileName.endsWith(".tsx") || fileName.includes("index.ts");
 
 const resolveFilesFromDirectory = (
   dirPath: string,
@@ -44,14 +45,18 @@ const resolveFilesFromDirectory = (
 };
 
 const buildVirtualProgram = async (rootEntryFilePath: string) => {
-  const project = await createProject();
+  const project = await createProject({ useInMemoryFileSystem: true });
   const rootDir = path.dirname(rootEntryFilePath);
   const files = await resolveFilesFromDirectory(rootDir);
   await files.reduce((chain, filePath) => {
     return chain
       .then(() => readFilePromise(filePath))
       .then((fileContents) => {
-        project.createSourceFile(filePath, fileContents);
+        try {
+          project.createSourceFile(filePath, fileContents);
+        } catch (err) {
+          console.error("Read file error:", err);
+        }
       });
   }, Promise.resolve() as Promise<unknown>);
 
