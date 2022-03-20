@@ -32,6 +32,7 @@ import {
   saveElement,
   target,
 } from "./node.util";
+import { providePluginApi } from "./plugins";
 import { buildProgram } from "./program";
 import {
   AstState,
@@ -188,9 +189,7 @@ const traverse = (options: TraverseInput) => {
         };
         const treeChange = plugin.visitComponent({
           ...pluginVisitorInputs,
-          api: {
-            saveElement: saveChildElement(pluginVisitorInputs),
-          },
+          ...providePluginApi(plugin.pluginName, pluginVisitorInputs),
         });
 
         if (treeChange?.newNode) {

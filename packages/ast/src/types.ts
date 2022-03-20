@@ -19,8 +19,10 @@ interface ComponentVisitorInput {
   api: ComponentVisitorApi;
 }
 
-interface ComponentVisitorApi {
+export interface ComponentVisitorApi {
   saveElement: (name: ComponentName) => TreeChange;
+  getMetadata: () => unknown;
+  saveMetadata: (metadata: Record<string, unknown>) => void;
 }
 
 interface TreeChange {
@@ -32,6 +34,7 @@ export type PluginVisitor = (
 ) => TreeChange | undefined;
 
 export interface Plugin {
+  pluginName: string;
   componentIds: string[];
   visitComponent: PluginVisitor;
 }
@@ -83,3 +86,14 @@ export interface TraverseOptions extends SharedOptions {
   program: Program;
   diagnosticTree?: DiagnosticTree;
 }
+
+export interface SaveInputs {
+  name: ComponentName;
+  path: number[];
+  tree: NodeTree;
+  fileId: number;
+  lookups: NodeLookups;
+  names: Set<string>;
+}
+
+export type PluginVisitorInputs = Omit<SaveInputs, "name">;

@@ -1,5 +1,5 @@
-import { jsxProps, saveChildElement, saveElement } from "../node.util";
-import { NodeLookups, NodeTree, PluginVisitor } from "../types";
+import { jsxProps } from "../node.util";
+import { ComponentVisitorApi, PluginVisitor } from "../types";
 
 export const componentIds = ["Stack.Screen"];
 
@@ -11,9 +11,12 @@ interface NavigationLookup {
   components: Set<string>;
 }
 
-const initializeNavLookup = (lookups: NodeLookups): NavigationLookup => {
-  if (lookups.thirdParty.reactNavigation) {
-    return lookups.thirdParty.reactNavigation as NavigationLookup;
+export const pluginName = "reactNavigation";
+
+const initializeNavLookup = (api: ComponentVisitorApi): NavigationLookup => {
+  const metadata = api.getMetadata();
+  if (metadata) {
+    return metadata as NavigationLookup;
   }
 
   const navLookup = {
@@ -21,7 +24,7 @@ const initializeNavLookup = (lookups: NodeLookups): NavigationLookup => {
     components: new Set<string>(),
   };
 
-  lookups.thirdParty.reactNavigation = navLookup;
+  api.saveMetadata(navLookup);
 
   return navLookup;
 };
@@ -29,7 +32,6 @@ const initializeNavLookup = (lookups: NodeLookups): NavigationLookup => {
 export const visitComponent: PluginVisitor = ({
   name,
   element,
-  lookups,
   names,
   api,
 }) => {
@@ -37,7 +39,7 @@ export const visitComponent: PluginVisitor = ({
     return;
   }
 
-  const navLookup = initializeNavLookup(lookups);
+  const navLookup = initializeNavLookup(api);
 
   const props = jsxProps(element);
   if (typeof props.name === "string" && typeof props.component === "string") {
