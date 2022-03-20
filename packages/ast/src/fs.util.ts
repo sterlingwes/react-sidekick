@@ -46,6 +46,7 @@ export const findPath = async (filePath: string) => {
 };
 
 export const pathAsRelativeToRoot = (dirname: string, path: string) => {
+  if (path.startsWith(dirname)) return path;
   const rootPathStartIndex = path.indexOf(dirname.slice(2));
   let relativeRootPath = path;
   if (rootPathStartIndex > 0) {
