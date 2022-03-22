@@ -14,9 +14,11 @@ export const DetailScreen = ({ route, navigation }: any) => {
   }, []);
 
   return (
-    <View>
-      <Text>{id}</Text>
-      <Text>{titleText}</Text>
-    </View>
+    <>
+      <View>
+        <Text>{id}</Text>
+        <Text>{titleText}</Text>
+      </View>
+    </>
   );
 };

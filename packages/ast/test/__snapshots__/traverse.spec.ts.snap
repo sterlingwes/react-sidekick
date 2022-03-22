@@ -935,42 +935,48 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                 </ExpressionStatement Skipped>
                 <ReturnStatement Interesting>
                   <ParenthesizedExpression Interesting>
-                    <JsxElement (View-0.0) SavedElement>
-                      <JsxOpeningElement Interesting>
-                        <Identifier Skipped />
-                        <JsxAttributes Interesting />
-                      </JsxOpeningElement Interesting>
+                    <JsxFragment Interesting>
+                      <JsxOpeningFragment Skipped />
                       <JsxText Skipped />
-                      <JsxElement (Text-0.0.0) SavedElement>
+                      <JsxElement (View-0.0) SavedElement>
                         <JsxOpeningElement Interesting>
                           <Identifier Skipped />
                           <JsxAttributes Interesting />
                         </JsxOpeningElement Interesting>
-                        <JsxExpression Interesting>
-                          <Identifier Skipped />
-                        </JsxExpression Interesting>
+                        <JsxText Skipped />
+                        <JsxElement (Text-0.0.0) SavedElement>
+                          <JsxOpeningElement Interesting>
+                            <Identifier Skipped />
+                            <JsxAttributes Interesting />
+                          </JsxOpeningElement Interesting>
+                          <JsxExpression Interesting>
+                            <Identifier Skipped />
+                          </JsxExpression Interesting>
+                          <JsxClosingElement Skipped>
+                            <Identifier Skipped />
+                          </JsxClosingElement Skipped>
+                        </JsxElement (Text-0.0.0) SavedElement>
+                        <JsxText Skipped />
+                        <JsxElement (Text-0.0.1) SavedElement>
+                          <JsxOpeningElement Interesting>
+                            <Identifier Skipped />
+                            <JsxAttributes Interesting />
+                          </JsxOpeningElement Interesting>
+                          <JsxExpression Interesting>
+                            <Identifier Skipped />
+                          </JsxExpression Interesting>
+                          <JsxClosingElement Skipped>
+                            <Identifier Skipped />
+                          </JsxClosingElement Skipped>
+                        </JsxElement (Text-0.0.1) SavedElement>
+                        <JsxText Skipped />
                         <JsxClosingElement Skipped>
                           <Identifier Skipped />
                         </JsxClosingElement Skipped>
-                      </JsxElement (Text-0.0.0) SavedElement>
+                      </JsxElement (View-0.0) SavedElement>
                       <JsxText Skipped />
-                      <JsxElement (Text-0.0.1) SavedElement>
-                        <JsxOpeningElement Interesting>
-                          <Identifier Skipped />
-                          <JsxAttributes Interesting />
-                        </JsxOpeningElement Interesting>
-                        <JsxExpression Interesting>
-                          <Identifier Skipped />
-                        </JsxExpression Interesting>
-                        <JsxClosingElement Skipped>
-                          <Identifier Skipped />
-                        </JsxClosingElement Skipped>
-                      </JsxElement (Text-0.0.1) SavedElement>
-                      <JsxText Skipped />
-                      <JsxClosingElement Skipped>
-                        <Identifier Skipped />
-                      </JsxClosingElement Skipped>
-                    </JsxElement (View-0.0) SavedElement>
+                      <JsxClosingFragment Skipped />
+                    </JsxFragment Interesting>
                   </ParenthesizedExpression Interesting>
                 </ReturnStatement Interesting>
               </Block Interesting>
