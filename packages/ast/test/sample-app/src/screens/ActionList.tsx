@@ -8,6 +8,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { Type } from "../components/Type";
 
 const host = "https://some.host";
 const query = `
@@ -78,7 +79,7 @@ export const ActionList = ({ navigation }: any) => {
   const renderItem = ({ item }: any) => (
     <TouchableOpacity onPress={() => onPressItem(item)}>
       <View style={styles.flatListItem}>
-        <Text>{item.titleText}</Text>
+        <Type>{item.titleText}</Type>
       </View>
     </TouchableOpacity>
   );
@@ -86,7 +87,7 @@ export const ActionList = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text>{`Welcome ${firstName} ${lastName}!`}</Text>
+        <Type>{`Welcome ${firstName} ${lastName}!`}</Type>
       </View>
       <FlatList
         refreshControl={

@@ -28,7 +28,7 @@ describe("sample-app tests", () => {
                     <ActionList>
                       <TouchableOpacity>
                         <View>
-                          <Text />
+                          <Type />
                         </View>
                       </TouchableOpacity>
                     </ActionList>
@@ -88,11 +88,12 @@ describe("sample-app tests", () => {
     it("should annotate nodes with file Ids used in files lookup", () => {
       expect(state.files).toEqual({
         "1": "packages/ast/test/sample-app/Main.tsx",
-        "2": "./packages/ast/test/sample-app/screens/ActionList.tsx",
-        "3": "./packages/ast/test/sample-app/screens/DetailScreen.tsx",
-        "4": "./packages/ast/test/sample-app/components/index.ts",
-        "5": "./packages/ast/test/sample-app/screens/SettingsProfileScreen.tsx",
-        "6": "./packages/ast/test/sample-app/screens/SettingsScreen.tsx",
+        "2": "./packages/ast/test/sample-app/src/screens/ActionList.tsx",
+        "3": "./packages/ast/test/sample-app/src/components/Type.tsx",
+        "4": "./packages/ast/test/sample-app/src/screens/DetailScreen.tsx",
+        "5": "./packages/ast/test/sample-app/src/components/index.ts",
+        "6": "./packages/ast/test/sample-app/src/screens/SettingsProfileScreen.tsx",
+        "7": "./packages/ast/test/sample-app/src/screens/SettingsScreen.tsx",
       });
     });
   });
@@ -119,10 +120,10 @@ describe("sample-app tests", () => {
           "ActionList-0.0.0.0.1.0.0",
           "TouchableOpacity-0.0.0.0.1.0.0.0",
           "View-0.0.0.0.1.0.0.0.0",
-          "Text-0.0.0.0.1.0.0.0.0.0",
+          "Type-0.0.0.0.1.0.0.0.0.0",
           "View-0.0.0.0.1.0.0.1",
           "View-0.0.0.0.1.0.0.1.0",
-          "Text-0.0.0.0.1.0.0.1.0.0",
+          "Type-0.0.0.0.1.0.0.1.0.0",
           "FlatList-0.0.0.0.1.0.0.1.1",
           "RefreshControl-0.0.0.0.1.0.0.1.1.0",
           "DetailScreen-0.0.0.0.2.0.0",

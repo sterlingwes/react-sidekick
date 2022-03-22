@@ -3,12 +3,12 @@ import { Provider as RRProvider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { ActionList } from "./screens/ActionList";
-import { DetailScreen } from "./screens/DetailScreen";
-import { getStore } from "./other";
-import { MenuButton } from "./components";
-import { SettingsProfileScreen } from "./screens/SettingsProfileScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
+import { ActionList } from "./src/screens/ActionList";
+import { DetailScreen } from "./src/screens/DetailScreen";
+import { getStore } from "./src/other";
+import { MenuButton } from "./src/components";
+import { SettingsProfileScreen } from "./src/screens/SettingsProfileScreen";
+import { SettingsScreen } from "./src/screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 

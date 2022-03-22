@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { Type } from "./Type";
 
 export const MenuButton = ({ onPress, label }: any) => (
   <TouchableOpacity onPress={onPress}>
-    <Text>{label}</Text>
+    <Type>{label}</Type>
   </TouchableOpacity>
 );

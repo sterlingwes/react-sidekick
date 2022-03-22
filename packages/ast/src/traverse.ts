@@ -117,8 +117,8 @@ const traverse = (options: TraverseInput) => {
         bindings.push(binding);
       });
 
-      if (bindings.length === 0) {
-        const singleImport = importNode.importClause;
+      const singleImport = importNode.importClause;
+      if (bindings.length === 0 && singleImport) {
         bindings.push(singleImport);
       }
 
@@ -366,13 +366,17 @@ export const traverseFromFile = async (
     diagnosticTree,
   });
 
-  const followableCrawlPaths = interestingCrawlPaths(crawlPaths, names);
+  const followableCrawlPaths = interestingCrawlPaths(
+    crawlPaths,
+    names,
+    pathAsRelativeToRoot(dirname, sourceFile.fileName)
+  );
   log({ followableCrawlPaths });
 
   if (dirname && followableCrawlPaths.length) {
     await followableCrawlPaths.reduce((chain, filePath) => {
       return chain.then(() => {
-        return findPath(path.resolve(dirname, filePath)).then((subPath) => {
+        return findPath(path.resolve(filePath)).then((subPath) => {
           if (!subPath) {
             throw new Error(
               `Exhausted possibilities resolving path to ${filePath} from ${dirname}`

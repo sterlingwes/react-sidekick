@@ -320,10 +320,19 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
       </VariableDeclarationList Interesting>
     </FirstStatement Interesting>
     <EndOfFileToken Skipped />
-    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/ActionList.tsx ---------------------------->
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/ActionList.tsx ---------------------------->
       <ImportDeclaration Skipped>
         <ImportClause Skipped>
           <Identifier Skipped />
+        </ImportClause Skipped>
+      </ImportDeclaration Skipped>
+      <ImportDeclaration Skipped>
+        <ImportClause Skipped>
+          <NamedImports Skipped>
+            <ImportSpecifier Skipped>
+              <Identifier Skipped />
+            </ImportSpecifier Skipped>
+          </NamedImports Skipped>
         </ImportClause Skipped>
       </ImportDeclaration Skipped>
       <ImportDeclaration Skipped>
@@ -594,7 +603,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                                 </JsxAttributes Interesting>
                               </JsxOpeningElement Interesting>
                               <JsxText Skipped />
-                              <JsxElement (Text-0.0.0.0) SavedElement>
+                              <JsxElement (Type-0.0.0.0) SavedElement>
                                 <JsxOpeningElement Interesting>
                                   <Identifier Skipped />
                                   <JsxAttributes Interesting />
@@ -607,7 +616,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                                 <JsxClosingElement Skipped>
                                   <Identifier Skipped />
                                 </JsxClosingElement Skipped>
-                              </JsxElement (Text-0.0.0.0) SavedElement>
+                              </JsxElement (Type-0.0.0.0) SavedElement>
                               <JsxText Skipped />
                               <JsxClosingElement Skipped>
                                 <Identifier Skipped />
@@ -655,7 +664,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                           </JsxAttributes Interesting>
                         </JsxOpeningElement Interesting>
                         <JsxText Skipped />
-                        <JsxElement (Text-0.1.0.0) SavedElement>
+                        <JsxElement (Type-0.1.0.0) SavedElement>
                           <JsxOpeningElement Interesting>
                             <Identifier Skipped />
                             <JsxAttributes Interesting />
@@ -668,7 +677,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                           <JsxClosingElement Skipped>
                             <Identifier Skipped />
                           </JsxClosingElement Skipped>
-                        </JsxElement (Text-0.1.0.0) SavedElement>
+                        </JsxElement (Type-0.1.0.0) SavedElement>
                         <JsxText Skipped />
                         <JsxClosingElement Skipped>
                           <Identifier Skipped />
@@ -826,8 +835,47 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
         </VariableDeclarationList Interesting>
       </FirstStatement Interesting>
       <EndOfFileToken Skipped />
-    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/ActionList.tsx ---------------------------->
-    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/DetailScreen.tsx ---------------------------->
+      <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/components/Type.tsx ---------------------------->
+        <ImportDeclaration Skipped>
+          <ImportClause Skipped>
+            <Identifier Skipped />
+          </ImportClause Skipped>
+        </ImportDeclaration Skipped>
+        <ImportDeclaration Skipped>
+          <ImportClause Skipped>
+            <NamedImports Skipped>
+              <ImportSpecifier Skipped>
+                <Identifier Skipped />
+              </ImportSpecifier Skipped>
+            </NamedImports Skipped>
+          </ImportClause Skipped>
+        </ImportDeclaration Skipped>
+        <FirstStatement Interesting>
+          <ExportKeyword Skipped />
+          <VariableDeclarationList Interesting>
+            <VariableDeclaration Interesting>
+              <Identifier Skipped />
+              <ArrowFunction Interesting>
+                <Parameter Skipped>
+                  <Identifier Skipped />
+                </Parameter Skipped>
+                <EqualsGreaterThanToken Skipped />
+                <JsxSelfClosingElement (Text-0.0) SavedElement>
+                  <Identifier Skipped />
+                  <JsxAttributes Interesting>
+                    <JsxSpreadAttribute Skipped>
+                      <Identifier Skipped />
+                    </JsxSpreadAttribute Skipped>
+                  </JsxAttributes Interesting>
+                </JsxSelfClosingElement (Text-0.0) SavedElement>
+              </ArrowFunction Interesting>
+            </VariableDeclaration Interesting>
+          </VariableDeclarationList Interesting>
+        </FirstStatement Interesting>
+        <EndOfFileToken Skipped />
+      </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/components/Type.tsx ---------------------------->
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/ActionList.tsx ---------------------------->
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/DetailScreen.tsx ---------------------------->
       <ImportDeclaration Skipped>
         <ImportClause Skipped>
           <Identifier Skipped />
@@ -931,14 +979,14 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
         </VariableDeclarationList Interesting>
       </FirstStatement Interesting>
       <EndOfFileToken Skipped />
-    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/DetailScreen.tsx ---------------------------->
-    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/components/index.ts ---------------------------->
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/DetailScreen.tsx ---------------------------->
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/components/index.ts ---------------------------->
       <ExportDeclaration Skipped>
         <StringLiteral Skipped />
       </ExportDeclaration Skipped>
       <EndOfFileToken Skipped />
-    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/components/index.ts ---------------------------->
-    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/SettingsProfileScreen.tsx ---------------------------->
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/components/index.ts ---------------------------->
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/SettingsProfileScreen.tsx ---------------------------->
       <ImportDeclaration Skipped>
         <ImportClause Skipped>
           <Identifier Skipped />
@@ -1270,8 +1318,8 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
         </VariableDeclarationList Interesting>
       </FirstStatement Interesting>
       <EndOfFileToken Skipped />
-    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/SettingsProfileScreen.tsx ---------------------------->
-    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/SettingsScreen.tsx ---------------------------->
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/SettingsProfileScreen.tsx ---------------------------->
+    <!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/SettingsScreen.tsx ---------------------------->
       <ImportDeclaration Skipped>
         <ImportClause Skipped>
           <Identifier Skipped />
@@ -1603,7 +1651,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
         </VariableDeclarationList Interesting>
       </FirstStatement Interesting>
       <EndOfFileToken Skipped />
-    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/screens/SettingsScreen.tsx ---------------------------->
+    </!---- /Users/wesjohnson/Code/react-sidekick/packages/ast/test/sample-app/src/screens/SettingsScreen.tsx ---------------------------->
   </!---- packages/ast/test/sample-app/Main.tsx ---------------------------->
 </FirstToken Unknown>"
 `;
