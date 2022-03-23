@@ -26,26 +26,45 @@ describe("handleImportDeclaration", () => {
 
   it("should build a map of module paths to export names", () => {
     const crawlPaths = {};
-    const aliases = {};
 
     file.forEachChild((child) => {
       if (child.kind === SyntaxKind.ImportDeclaration) {
-        handleImportDeclaration(
-          child as ImportDeclaration,
-          crawlPaths,
-          aliases
-        );
+        handleImportDeclaration(child as ImportDeclaration, crawlPaths);
       }
     });
 
-    expect(crawlPaths).toEqual({
-      "./components": [{ name: "SomeOtherComponent", alias: undefined }],
-      "@react-navigation/native-stack": [
-        { name: "createNativeStackNavigator", alias: undefined },
-      ],
-      react: [{ name: "React", alias: undefined }],
-      "react-redux": [{ alias: "RRProvider", name: "Provider" }],
-    });
+    expect(crawlPaths).toMatchInlineSnapshot(`
+      Object {
+        "./components": Array [
+          Object {
+            "alias": undefined,
+            "name": "SomeOtherComponent",
+          },
+          Object {
+            "alias": "Component",
+            "name": "default",
+          },
+        ],
+        "@react-navigation/native-stack": Array [
+          Object {
+            "alias": undefined,
+            "name": "createNativeStackNavigator",
+          },
+        ],
+        "react": Array [
+          Object {
+            "alias": "React",
+            "name": "default",
+          },
+        ],
+        "react-redux": Array [
+          Object {
+            "alias": "RRProvider",
+            "name": "Provider",
+          },
+        ],
+      }
+    `);
   });
 });
 
@@ -56,11 +75,7 @@ describe("interestingCrawlPaths", () => {
   it("should return interesting relative project paths when matching component name list", () => {
     const crawlPaths = {
       "./components": [{ name: "SomeOtherComponent", alias: undefined }],
-      "@react-navigation/native-stack": [
-        { name: "createNativeStackNavigator", alias: undefined },
-      ],
-      react: [{ name: "React", alias: undefined }],
-      "react-redux": [{ alias: "RRProvider", name: "Provider" }],
+      react: [{ name: "default", alias: "React" }],
     };
 
     const componentIdentifiers = new Set(["SomeOtherComponent"]);

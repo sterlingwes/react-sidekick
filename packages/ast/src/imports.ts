@@ -1,48 +1,56 @@
 import path from "path";
 import {
-  ImportClause,
   ImportDeclaration,
-  ImportSpecifier,
+  isImportClause,
   isImportSpecifier,
+  Node,
 } from "typescript";
 import { CrawlPaths, ImportBinding } from "./types";
 
-type ImportNameBinding = ImportSpecifier | ImportClause;
+const toBindingNames = (binding: Node) => {
+  let alias;
+  let name =
+    isImportClause(binding) || isImportSpecifier(binding)
+      ? (binding.name?.escapedText as string | undefined)
+      : undefined;
+  if (isImportSpecifier(binding) && binding.propertyName) {
+    alias = name;
+    name = binding.propertyName.escapedText as string | undefined;
+  }
+
+  return { name, alias };
+};
+
+const validNames = (names: {
+  name: string | undefined;
+  alias: string | undefined;
+}): names is ImportBinding => typeof names.name === "string";
 
 export const handleImportDeclaration = (
   importNode: ImportDeclaration,
-  crawlPaths: CrawlPaths,
-  aliases: Record<string, string> // Key as Value (Source as Alias)
+  crawlPaths: CrawlPaths
 ) => {
-  let bindings: ImportNameBinding[] = [];
+  const modulePath = (importNode.moduleSpecifier as any).text;
+
+  let bindings: ImportBinding[] = [];
 
   importNode.importClause?.namedBindings?.forEachChild((binding) => {
-    bindings.push(binding as ImportSpecifier);
+    const names = toBindingNames(binding);
+    if (validNames(names)) bindings.push(names);
   });
 
   const singleImport = importNode.importClause;
-  if (bindings.length === 0 && singleImport) {
-    bindings.push(singleImport);
+  if (singleImport && singleImport.name) {
+    bindings.push({
+      name: "default",
+      alias: singleImport.name.escapedText as string | undefined,
+    });
   }
 
-  const modulePath = (importNode.moduleSpecifier as any).text;
-  const moduleBindings = bindings
-    .map((binding: ImportNameBinding) => {
-      let alias;
-      let name = binding.name?.escapedText as string | undefined;
-      if (isImportSpecifier(binding) && binding.propertyName) {
-        alias = name;
-        name = binding.propertyName.escapedText as string | undefined;
-      }
-
-      return { name, alias };
-    })
-    .filter((binding): binding is ImportBinding => !!binding.name);
-
   if (crawlPaths[modulePath]) {
-    crawlPaths[modulePath] = crawlPaths[modulePath].concat(...moduleBindings);
+    crawlPaths[modulePath] = crawlPaths[modulePath].concat(...bindings);
   } else {
-    crawlPaths[modulePath] = moduleBindings;
+    crawlPaths[modulePath] = bindings;
   }
 };
 
