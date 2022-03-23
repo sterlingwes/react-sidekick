@@ -5,8 +5,8 @@ export type Id = string; // "Component-ANCESTRAL_ID"
 export type ComponentName = string; // "Component"
 export type AncestralId = string; // "ANCESTRAL_ID"
 type FilePath = string; // "workspace/path/file.ts"
-type Binding = string;
-export type CrawlPaths = Record<FilePath, Binding[]>;
+export type ImportBinding = { name: string; alias: string | undefined };
+export type CrawlPaths = Record<FilePath, ImportBinding[]>;
 
 interface ComponentVisitorInput {
   id: Id;

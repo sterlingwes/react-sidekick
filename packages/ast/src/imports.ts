@@ -1,14 +1,23 @@
 import path from "path";
-import { ImportDeclaration, ImportSpecifier, Node } from "typescript";
-import { CrawlPaths } from "./types";
+import {
+  ImportClause,
+  ImportDeclaration,
+  ImportSpecifier,
+  isImportSpecifier,
+} from "typescript";
+import { CrawlPaths, ImportBinding } from "./types";
+
+type ImportNameBinding = ImportSpecifier | ImportClause;
 
 export const handleImportDeclaration = (
   importNode: ImportDeclaration,
-  crawlPaths: Record<string, string[]>
+  crawlPaths: CrawlPaths,
+  aliases: Record<string, string> // Key as Value (Source as Alias)
 ) => {
-  let bindings: any[] = [];
+  let bindings: ImportNameBinding[] = [];
+
   importNode.importClause?.namedBindings?.forEachChild((binding) => {
-    bindings.push(binding);
+    bindings.push(binding as ImportSpecifier);
   });
 
   const singleImport = importNode.importClause;
@@ -17,9 +26,18 @@ export const handleImportDeclaration = (
   }
 
   const modulePath = (importNode.moduleSpecifier as any).text;
-  const moduleBindings = bindings.map(
-    (binding: ImportSpecifier) => binding.name.escapedText as string
-  );
+  const moduleBindings = bindings
+    .map((binding: ImportNameBinding) => {
+      let alias;
+      let name = binding.name?.escapedText as string | undefined;
+      if (isImportSpecifier(binding) && binding.propertyName) {
+        alias = name;
+        name = binding.propertyName.escapedText as string | undefined;
+      }
+
+      return { name, alias };
+    })
+    .filter((binding): binding is ImportBinding => !!binding.name);
 
   if (crawlPaths[modulePath]) {
     crawlPaths[modulePath] = crawlPaths[modulePath].concat(...moduleBindings);
@@ -46,7 +64,9 @@ export const interestingCrawlPaths = (
       }
 
       const bindings = crawlPaths[crawlPath];
-      return bindings.some((binding) => componentIdentifiers.has(binding));
+      return bindings.some((binding) =>
+        componentIdentifiers.has(binding.alias ?? binding.name)
+      );
     })
     .map((crawlPath) => path.resolve(basePath, crawlPath));
 };

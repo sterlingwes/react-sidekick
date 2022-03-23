@@ -3,37 +3,48 @@ import { ImportDeclaration, SourceFile, SyntaxKind } from "typescript";
 
 import { handleImportDeclaration, interestingCrawlPaths } from "./imports";
 
-describe("handleImportDeclaration", () => {
-  const testImports = `
-    import React from "react";
-    import { Provider as RRProvider } from "react-redux";
-    import { createNativeStackNavigator } from "@react-navigation/native-stack";
-    import Component, { SomeOtherComponent } from './components';
+const appFileFixture = `
+import React from "react";
+import { Provider as RRProvider } from "react-redux";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Component, { SomeOtherComponent } from './components';
 
-    const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
+
+export const App = () => (
+  <RootStack.Screen name="Home" component={Component} />
+)
 `;
 
+describe("handleImportDeclaration", () => {
   let file: SourceFile;
 
   beforeEach(async () => {
     const project = await createProject({ useInMemoryFileSystem: true });
-    file = project.createSourceFile("./some/path.tsx", testImports);
+    file = project.createSourceFile("./some/app.tsx", appFileFixture);
   });
 
   it("should build a map of module paths to export names", () => {
     const crawlPaths = {};
+    const aliases = {};
 
     file.forEachChild((child) => {
       if (child.kind === SyntaxKind.ImportDeclaration) {
-        handleImportDeclaration(child as ImportDeclaration, crawlPaths);
+        handleImportDeclaration(
+          child as ImportDeclaration,
+          crawlPaths,
+          aliases
+        );
       }
     });
 
     expect(crawlPaths).toEqual({
-      "./components": ["SomeOtherComponent"],
-      "@react-navigation/native-stack": ["createNativeStackNavigator"],
-      react: ["React"],
-      "react-redux": ["RRProvider"],
+      "./components": [{ name: "SomeOtherComponent", alias: undefined }],
+      "@react-navigation/native-stack": [
+        { name: "createNativeStackNavigator", alias: undefined },
+      ],
+      react: [{ name: "React", alias: undefined }],
+      "react-redux": [{ alias: "RRProvider", name: "Provider" }],
     });
   });
 });
@@ -44,10 +55,12 @@ describe("interestingCrawlPaths", () => {
 
   it("should return interesting relative project paths when matching component name list", () => {
     const crawlPaths = {
-      "./components": ["SomeOtherComponent"],
-      "@react-navigation/native-stack": ["createNativeStackNavigator"],
-      react: ["React"],
-      "react-redux": ["RRProvider"],
+      "./components": [{ name: "SomeOtherComponent", alias: undefined }],
+      "@react-navigation/native-stack": [
+        { name: "createNativeStackNavigator", alias: undefined },
+      ],
+      react: [{ name: "React", alias: undefined }],
+      "react-redux": [{ alias: "RRProvider", name: "Provider" }],
     };
 
     const componentIdentifiers = new Set(["SomeOtherComponent"]);
