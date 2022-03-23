@@ -1,11 +1,5 @@
 import path from "path";
-import {
-  ImportDeclaration,
-  ImportSpecifier,
-  Node,
-  SourceFile,
-  SyntaxKind,
-} from "typescript";
+import { ImportDeclaration, Node, SourceFile, SyntaxKind } from "typescript";
 import { log } from "./debug.util";
 import {
   DiagnosticReason,
@@ -14,11 +8,8 @@ import {
   trackDiagnostic,
   trackDiagnosticFileBoundary,
 } from "./diagnostic.util";
-import {
-  findPath,
-  interestingCrawlPaths,
-  pathAsRelativeToRoot,
-} from "./fs.util";
+import { findPath, pathAsRelativeToRoot } from "./fs.util";
+import { handleImportDeclaration, interestingCrawlPaths } from "./imports";
 import {
   createNode,
   getLeafNode,
@@ -28,7 +19,6 @@ import {
   jsxTagName,
   nodeName,
   possibleComponentExport,
-  saveChildElement,
   saveElement,
   target,
 } from "./node.util";
@@ -111,30 +101,7 @@ const traverse = (options: TraverseInput) => {
     }
 
     if ([SyntaxKind.ImportDeclaration].includes(childNode.kind)) {
-      const importNode = childNode as ImportDeclaration;
-      let bindings: any[] = [];
-      importNode.importClause?.namedBindings?.forEachChild((binding) => {
-        bindings.push(binding);
-      });
-
-      const singleImport = importNode.importClause;
-      if (bindings.length === 0 && singleImport) {
-        bindings.push(singleImport);
-      }
-
-      const modulePath = (importNode.moduleSpecifier as any).text;
-      const moduleBindings = bindings.map(
-        (binding: ImportSpecifier) => binding.name.escapedText as string
-      );
-
-      if (crawlPaths[modulePath]) {
-        crawlPaths[modulePath] = crawlPaths[modulePath].concat(
-          ...moduleBindings
-        );
-      } else {
-        crawlPaths[modulePath] = moduleBindings;
-      }
-
+      handleImportDeclaration(childNode as ImportDeclaration, crawlPaths);
       trackDeadEndDiagnostic(childNode, diagnosticTree);
       return; // handled current node as import type
     }

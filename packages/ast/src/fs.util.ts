@@ -1,29 +1,4 @@
 import fs from "fs";
-import path from "path";
-import { CrawlPaths } from "./types";
-
-export const interestingCrawlPaths = (
-  crawlPaths: CrawlPaths,
-  componentIdentifiers: Set<string>,
-  baseFilePath: string
-) => {
-  const baseFilePathParts = baseFilePath.split("/");
-  baseFilePathParts.pop();
-
-  const basePath = baseFilePathParts.join("/");
-
-  return Object.keys(crawlPaths)
-    .filter((crawlPath) => {
-      if (/\./.test(crawlPath) === false) {
-        // skip non-relative paths
-        return false;
-      }
-
-      const bindings = crawlPaths[crawlPath];
-      return bindings.some((binding) => componentIdentifiers.has(binding));
-    })
-    .map((crawlPath) => path.resolve(basePath, crawlPath));
-};
 
 const hasExtension = (filePath: string) => /\.[a-z0-9A-Z]{2,3}/.test(filePath);
 const extensions = [".ts", ".tsx", "/index.ts", "/index.tsx"];
