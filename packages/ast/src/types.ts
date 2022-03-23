@@ -8,11 +8,12 @@ type FilePath = string; // "workspace/path/file.ts"
 export type ImportBinding = { name: string; alias: string | undefined };
 export type CrawlPaths = Record<FilePath, ImportBinding[]>;
 
-interface ComponentVisitorInput {
+export interface ComponentVisitorInput {
   id: Id;
   name: ComponentName;
   element: JsxSelfClosingElement | JsxOpeningElement;
   tree: NodeTree;
+  fileId: number;
   lookups: NodeLookups;
   path: number[];
   names: Set<string>;

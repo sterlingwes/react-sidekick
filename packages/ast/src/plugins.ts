@@ -1,7 +1,11 @@
 import { saveChildElement } from "./node.util";
-import { PluginVisitorInputs } from "./types";
+import { ComponentVisitorInput, Plugin, PluginVisitorInputs } from "./types";
 
-export const providePluginApi = (
+const getPlugin = (jsxTagName: string, plugins: Plugin[]) => {
+  return plugins.find(({ componentIds }) => componentIds.includes(jsxTagName));
+};
+
+const providePluginApi = (
   pluginName: string,
   pluginVisitorInputs: PluginVisitorInputs
 ) => ({
@@ -13,3 +17,42 @@ export const providePluginApi = (
     },
   },
 });
+
+type PluginApplicatorInputs = Omit<ComponentVisitorInput, "api"> & {
+  plugins: Plugin[];
+};
+
+export const applyPlugins = ({
+  id,
+  name,
+  element,
+  tree,
+  fileId,
+  lookups,
+  path,
+  names,
+  plugins,
+}: PluginApplicatorInputs) => {
+  const plugin = getPlugin(name, plugins);
+
+  if (plugin) {
+    const pluginVisitorInputs = {
+      id,
+      name,
+      element,
+      tree,
+      fileId,
+      lookups,
+      path,
+      names,
+    };
+    const treeChange = plugin.visitComponent({
+      ...pluginVisitorInputs,
+      ...providePluginApi(plugin.pluginName, pluginVisitorInputs),
+    });
+
+    if (treeChange?.newNode) {
+      return treeChange.newNode;
+    }
+  }
+};

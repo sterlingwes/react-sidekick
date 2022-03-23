@@ -22,7 +22,7 @@ import {
   saveElement,
   target,
 } from "./node.util";
-import { providePluginApi } from "./plugins";
+import { applyPlugins } from "./plugins";
 import { buildProgram } from "./program";
 import {
   AstState,
@@ -137,31 +137,20 @@ const traverse = (options: TraverseInput) => {
       });
       let newTree: NodeTree = newNode;
 
-      // TODO: need better way to match known lib components
-      // need to check name export and normalize for renames / aliasing
-      const plugin = plugins.find(({ componentIds }) =>
-        componentIds.includes(name)
-      );
+      const pluginTreeRoot = applyPlugins({
+        id: newNodeId,
+        name,
+        element,
+        tree: newNode,
+        fileId,
+        lookups,
+        path: newPath,
+        names,
+        plugins,
+      });
 
-      if (plugin) {
-        const pluginVisitorInputs = {
-          id: newNodeId,
-          name,
-          element,
-          tree: newNode,
-          fileId,
-          lookups,
-          path: newPath,
-          names,
-        };
-        const treeChange = plugin.visitComponent({
-          ...pluginVisitorInputs,
-          ...providePluginApi(plugin.pluginName, pluginVisitorInputs),
-        });
-
-        if (treeChange?.newNode) {
-          newTree = treeChange.newNode;
-        }
+      if (pluginTreeRoot) {
+        newTree = pluginTreeRoot;
       }
 
       const nextDiagnosticTree = trackDiagnostic(
