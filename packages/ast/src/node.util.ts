@@ -8,11 +8,11 @@ import {
   StringLiteral,
   SyntaxKind,
 } from "typescript";
+import { findMatchingNpmModule } from "./imports";
 import {
   AncestralId,
   ComponentName,
   Id,
-  NodeLookups,
   NodeTree,
   PluginVisitorInputs,
   SaveInputs,
@@ -164,11 +164,14 @@ export const saveElement = ({
   fileId,
   lookups,
   names,
+  crawlPaths,
 }: SaveInputs) => {
   names.add(name);
   const newNodeId = encodeId(name, path);
   const newNode = createNode({ id: newNodeId, name, fileId });
-  lookups.elements[newNodeId] = { name };
+  const moduleMatch = findMatchingNpmModule(crawlPaths, name);
+  const source = moduleMatch?.[0];
+  lookups.elements[newNodeId] = { name, source };
   tree.children.push(newNode);
   lookups.leafNodes.add(newNodeId);
   lookups.leafNodes.delete(tree.id);

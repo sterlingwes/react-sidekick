@@ -9,7 +9,11 @@ import {
   trackDiagnosticFileBoundary,
 } from "./diagnostic.util";
 import { findPath, pathAsRelativeToRoot } from "./fs.util";
-import { handleImportDeclaration, interestingCrawlPaths } from "./imports";
+import {
+  handleImportDeclaration,
+  interestingCrawlPaths,
+  trackIndirectImportBinding,
+} from "./imports";
 import {
   createNode,
   getLeafNode,
@@ -106,6 +110,8 @@ const traverse = (options: TraverseInput) => {
       return; // handled current node as import type
     }
 
+    trackIndirectImportBinding(childNode, crawlPaths);
+
     if (target(childNode)) {
       let parentNode = tree;
 
@@ -118,6 +124,7 @@ const traverse = (options: TraverseInput) => {
           tree,
           lookups,
           names,
+          crawlPaths,
         });
         parentNode = newNode;
         lastIdentifier = undefined;
@@ -133,6 +140,7 @@ const traverse = (options: TraverseInput) => {
         fileId,
         lookups,
         names,
+        crawlPaths,
         tree: parentNode,
       });
       let newTree: NodeTree = newNode;
@@ -146,6 +154,7 @@ const traverse = (options: TraverseInput) => {
         lookups,
         path: newPath,
         names,
+        crawlPaths,
         plugins,
       });
 

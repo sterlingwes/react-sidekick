@@ -1,19 +1,40 @@
 import { saveChildElement } from "./node.util";
-import { ComponentVisitorInput, Plugin, PluginVisitorInputs } from "./types";
+import {
+  ComponentVisitorInput,
+  CrawlPaths,
+  Plugin,
+  PluginVisitorInputs,
+} from "./types";
 
-const getPlugin = (jsxTagName: string, plugins: Plugin[]) => {
-  return plugins.find(({ componentIds }) => componentIds.includes(jsxTagName));
+const getPlugin = (crawlPaths: CrawlPaths, plugins: Plugin[]) => {
+  return plugins.find(({ importNames, sourceModules }) => {
+    const modulesToMatch = Object.keys(crawlPaths).filter((modulePath) => {
+      if (modulePath.charAt(0) === ".") return false;
+      return sourceModules.includes(modulePath);
+    });
+
+    if (!modulesToMatch.length) return false;
+
+    const componentMatch = modulesToMatch.find((moduleName) => {
+      return crawlPaths[moduleName].find(({ name, alias }) => {
+        const matchName = alias ?? name;
+        return importNames.includes(matchName);
+      });
+    });
+
+    return !!componentMatch;
+  });
 };
 
 const providePluginApi = (
-  pluginName: string,
+  namespace: string,
   pluginVisitorInputs: PluginVisitorInputs
 ) => ({
   api: {
     saveElement: saveChildElement(pluginVisitorInputs),
-    getMetadata: () => pluginVisitorInputs.lookups.thirdParty[pluginName],
+    getMetadata: () => pluginVisitorInputs.lookups.thirdParty[namespace],
     saveMetadata: (metadata: Record<string, unknown>) => {
-      pluginVisitorInputs.lookups.thirdParty[pluginName] = metadata;
+      pluginVisitorInputs.lookups.thirdParty[namespace] = metadata;
     },
   },
 });
@@ -31,9 +52,10 @@ export const applyPlugins = ({
   lookups,
   path,
   names,
+  crawlPaths,
   plugins,
 }: PluginApplicatorInputs) => {
-  const plugin = getPlugin(name, plugins);
+  const plugin = getPlugin(crawlPaths, plugins);
 
   if (plugin) {
     const pluginVisitorInputs = {
@@ -45,10 +67,11 @@ export const applyPlugins = ({
       lookups,
       path,
       names,
+      crawlPaths,
     };
     const treeChange = plugin.visitComponent({
       ...pluginVisitorInputs,
-      ...providePluginApi(plugin.pluginName, pluginVisitorInputs),
+      ...providePluginApi(plugin.namespace, pluginVisitorInputs),
     });
 
     if (treeChange?.newNode) {

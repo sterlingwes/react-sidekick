@@ -3,6 +3,9 @@ import {
   ImportDeclaration,
   isImportClause,
   isImportSpecifier,
+  isCallExpression,
+  isIdentifier,
+  isVariableDeclaration,
   Node,
 } from "typescript";
 import { CrawlPaths, ImportBinding } from "./types";
@@ -77,4 +80,44 @@ export const interestingCrawlPaths = (
       );
     })
     .map((crawlPath) => path.resolve(basePath, crawlPath));
+};
+
+export const findMatchingNpmModule = (
+  crawlPaths: CrawlPaths,
+  elementName: string
+) => {
+  return Object.entries(crawlPaths).find(([modulePath, importBindings]) => {
+    if (modulePath.charAt(0) === ".") {
+      // only apply for third-party components for now
+      return false;
+    }
+
+    return !!importBindings.find(({ name, alias }) => {
+      const match = alias ?? name;
+      return elementName === match;
+    });
+  });
+};
+
+export const trackIndirectImportBinding = (
+  childNode: Node,
+  crawlPaths: CrawlPaths
+) => {
+  if (
+    isVariableDeclaration(childNode) &&
+    isIdentifier(childNode.name) &&
+    childNode.initializer &&
+    isCallExpression(childNode.initializer) &&
+    isIdentifier(childNode.initializer.expression)
+  ) {
+    const possibleImportBinding = childNode.initializer.expression
+      .escapedText as string;
+    const match = findMatchingNpmModule(crawlPaths, possibleImportBinding);
+    if (match && match[0].charAt(0) !== ".") {
+      match[1].push({
+        name: childNode.name.escapedText as string,
+        alias: undefined,
+      });
+    }
+  }
 };

@@ -17,6 +17,7 @@ export interface ComponentVisitorInput {
   lookups: NodeLookups;
   path: number[];
   names: Set<string>;
+  crawlPaths: CrawlPaths;
   api: ComponentVisitorApi;
 }
 
@@ -35,8 +36,9 @@ export type PluginVisitor = (
 ) => TreeChange | undefined;
 
 export interface Plugin {
-  pluginName: string;
-  componentIds: string[];
+  namespace: string;
+  sourceModules: string[];
+  importNames: string[];
   visitComponent: PluginVisitor;
 }
 
@@ -55,7 +57,7 @@ interface FileProperties {
 
 export interface NodeElement {
   name: ComponentName;
-  file?: FilePath;
+  source?: string;
 }
 
 export interface NodeLookups {
@@ -95,6 +97,7 @@ export interface SaveInputs {
   fileId: number;
   lookups: NodeLookups;
   names: Set<string>;
+  crawlPaths: CrawlPaths;
 }
 
 export type PluginVisitorInputs = Omit<SaveInputs, "name">;

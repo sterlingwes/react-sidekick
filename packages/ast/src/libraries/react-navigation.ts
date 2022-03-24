@@ -1,7 +1,7 @@
 import { jsxProps } from "../node.util";
 import { ComponentVisitorApi, PluginVisitor } from "../types";
 
-export const componentIds = ["Stack.Screen"];
+export const importNames = ["createNativeStackNavigator"];
 
 type RouteName = string;
 type ComponentName = string;
@@ -11,7 +11,8 @@ interface NavigationLookup {
   components: Set<string>;
 }
 
-export const pluginName = "reactNavigation";
+export const namespace = "reactNavigation";
+export const sourceModules = ["@react-navigation/native-stack"];
 
 const initializeNavLookup = (api: ComponentVisitorApi): NavigationLookup => {
   const metadata = api.getMetadata();
@@ -29,16 +30,7 @@ const initializeNavLookup = (api: ComponentVisitorApi): NavigationLookup => {
   return navLookup;
 };
 
-export const visitComponent: PluginVisitor = ({
-  name,
-  element,
-  names,
-  api,
-}) => {
-  if (name !== "Stack.Screen") {
-    return;
-  }
-
+export const visitComponent: PluginVisitor = ({ element, names, api }) => {
   const navLookup = initializeNavLookup(api);
 
   const props = jsxProps(element);

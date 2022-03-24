@@ -21,9 +21,9 @@ describe("sample-app tests", () => {
         <Main>
           <RRProvider>
             <NavigationContainer>
-              <Stack.Navigator>
+              <RootStack.Navigator>
                 <MenuButton />
-                <Stack.Screen>
+                <RootStack.Screen>
                   <ActionList>
                     <ActionList>
                       <TouchableOpacity>
@@ -33,8 +33,8 @@ describe("sample-app tests", () => {
                       </TouchableOpacity>
                     </ActionList>
                   </ActionList>
-                </Stack.Screen>
-                <Stack.Screen>
+                </RootStack.Screen>
+                <RootStack.Screen>
                   <DetailScreen>
                     <DetailScreen>
                       <View>
@@ -43,9 +43,9 @@ describe("sample-app tests", () => {
                       </View>
                     </DetailScreen>
                   </DetailScreen>
-                </Stack.Screen>
-                <Stack.Group>
-                  <Stack.Screen>
+                </RootStack.Screen>
+                <RootStack.Group>
+                  <RootStack.Screen>
                     <SettingsScreen>
                       <SettingsScreen>
                         <SafeAreaView>
@@ -62,8 +62,8 @@ describe("sample-app tests", () => {
                         </SafeAreaView>
                       </SettingsScreen>
                     </SettingsScreen>
-                  </Stack.Screen>
-                  <Stack.Screen>
+                  </RootStack.Screen>
+                  <RootStack.Screen>
                     <SettingsProfileScreen>
                       <SettingsProfileScreen>
                         <View>
@@ -74,9 +74,9 @@ describe("sample-app tests", () => {
                         </View>
                       </SettingsProfileScreen>
                     </SettingsProfileScreen>
-                  </Stack.Screen>
-                </Stack.Group>
-              </Stack.Navigator>
+                  </RootStack.Screen>
+                </RootStack.Group>
+              </RootStack.Navigator>
             </NavigationContainer>
           </RRProvider>
         </Main>
@@ -106,16 +106,16 @@ describe("sample-app tests", () => {
           "Main-0",
           "RRProvider-0.0",
           "NavigationContainer-0.0.0",
-          "Stack.Navigator-0.0.0.0",
+          "RootStack.Navigator-0.0.0.0",
           "MenuButton-0.0.0.0.0",
-          "Stack.Screen-0.0.0.0.1",
+          "RootStack.Screen-0.0.0.0.1",
           "ActionList-0.0.0.0.1.0",
-          "Stack.Screen-0.0.0.0.2",
+          "RootStack.Screen-0.0.0.0.2",
           "DetailScreen-0.0.0.0.2.0",
-          "Stack.Group-0.0.0.0.3",
-          "Stack.Screen-0.0.0.0.3.0",
+          "RootStack.Group-0.0.0.0.3",
+          "RootStack.Screen-0.0.0.0.3.0",
           "SettingsScreen-0.0.0.0.3.0.0",
-          "Stack.Screen-0.0.0.0.3.1",
+          "RootStack.Screen-0.0.0.0.3.1",
           "SettingsProfileScreen-0.0.0.0.3.1.0",
           "ActionList-0.0.0.0.1.0.0",
           "TouchableOpacity-0.0.0.0.1.0.0.0",
@@ -147,6 +147,29 @@ describe("sample-app tests", () => {
         ]
       `);
     });
+
+    describe("element source module", () => {
+      it("should not indicate the source module for local components", () => {
+        const elementKey = Object.keys(state.elements).find((key) =>
+          key.startsWith("ActionList")
+        );
+        const elementValue = state.elements[elementKey ?? ""];
+        expect(elementValue).toEqual({
+          name: "ActionList",
+        });
+      });
+
+      it("should indicate the source module for NPM components", () => {
+        const elementKey = Object.keys(state.elements).find((key) =>
+          key.startsWith("TouchableOpacity")
+        );
+        const elementValue = state.elements[elementKey ?? ""];
+        expect(elementValue).toEqual({
+          name: "TouchableOpacity",
+          source: "react-native",
+        });
+      });
+    });
   });
 
   describe("leafNodes lookup", () => {
@@ -167,10 +190,10 @@ describe("sample-app tests", () => {
       expect(ids).toMatchInlineSnapshot(`
         Array [
           "MenuButton-0.0.0.0.0",
-          "Stack.Screen-0.0.0.0.1",
-          "Stack.Screen-0.0.0.0.2",
-          "Stack.Screen-0.0.0.0.3.0",
-          "Stack.Screen-0.0.0.0.3.1",
+          "RootStack.Screen-0.0.0.0.1",
+          "RootStack.Screen-0.0.0.0.2",
+          "RootStack.Screen-0.0.0.0.3.0",
+          "RootStack.Screen-0.0.0.0.3.1",
         ]
       `);
     });
