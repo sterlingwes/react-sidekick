@@ -10,7 +10,7 @@ import { MenuButton } from "./src/components";
 import { SettingsProfileScreen } from "./src/screens/SettingsProfileScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 
-const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 const store = getStore();
 
@@ -18,7 +18,7 @@ export const Main = () => {
   return (
     <RRProvider store={store}>
       <NavigationContainer>
-        <Stack.Navigator
+        <RootStack.Navigator
           screenOptions={({ navigation }) => ({
             headerLeft: () => (
               <MenuButton
@@ -28,20 +28,20 @@ export const Main = () => {
             ),
           })}
         >
-          <Stack.Screen name="Home" component={ActionList} />
-          <Stack.Screen name="Detail" component={DetailScreen} />
-          <Stack.Group
+          <RootStack.Screen name="Home" component={ActionList} />
+          <RootStack.Screen name="Detail" component={DetailScreen} />
+          <RootStack.Group
             screenOptions={{
               presentation: "modal",
             }}
           >
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-            <Stack.Screen
+            <RootStack.Screen name="Settings" component={SettingsScreen} />
+            <RootStack.Screen
               name="SettingsProfile"
               component={SettingsProfileScreen}
             />
-          </Stack.Group>
-        </Stack.Navigator>
+          </RootStack.Group>
+        </RootStack.Navigator>
       </NavigationContainer>
     </RRProvider>
   );
