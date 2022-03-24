@@ -138,7 +138,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                         <JsxAttributes Interesting />
                       </JsxOpeningElement Interesting>
                       <JsxText Skipped />
-                      <JsxElement (Stack.Navigator-0.0.0.0) SavedElement>
+                      <JsxElement (RootStack.Navigator-0.0.0.0) SavedElement>
                         <JsxOpeningElement Interesting>
                           <PropertyAccessExpression Skipped>
                             <Identifier Skipped />
@@ -197,7 +197,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                           </JsxAttributes Interesting>
                         </JsxOpeningElement Interesting>
                         <JsxText Skipped />
-                        <JsxSelfClosingElement (Stack.Screen-0.0.0.0.1) SavedElement>
+                        <JsxSelfClosingElement (RootStack.Screen-0.0.0.0.1) SavedElement>
                           <PropertyAccessExpression Skipped>
                             <Identifier Skipped />
                           </PropertyAccessExpression Skipped>
@@ -213,9 +213,9 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                               </JsxExpression Interesting>
                             </JsxAttribute Interesting>
                           </JsxAttributes Interesting>
-                        </JsxSelfClosingElement (Stack.Screen-0.0.0.0.1) SavedElement>
+                        </JsxSelfClosingElement (RootStack.Screen-0.0.0.0.1) SavedElement>
                         <JsxText Skipped />
-                        <JsxSelfClosingElement (Stack.Screen-0.0.0.0.2) SavedElement>
+                        <JsxSelfClosingElement (RootStack.Screen-0.0.0.0.2) SavedElement>
                           <PropertyAccessExpression Skipped>
                             <Identifier Skipped />
                           </PropertyAccessExpression Skipped>
@@ -231,9 +231,9 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                               </JsxExpression Interesting>
                             </JsxAttribute Interesting>
                           </JsxAttributes Interesting>
-                        </JsxSelfClosingElement (Stack.Screen-0.0.0.0.2) SavedElement>
+                        </JsxSelfClosingElement (RootStack.Screen-0.0.0.0.2) SavedElement>
                         <JsxText Skipped />
-                        <JsxElement (Stack.Group-0.0.0.0.3) SavedElement>
+                        <JsxElement (RootStack.Group-0.0.0.0.3) SavedElement>
                           <JsxOpeningElement Interesting>
                             <PropertyAccessExpression Skipped>
                               <Identifier Skipped />
@@ -253,7 +253,7 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                             </JsxAttributes Interesting>
                           </JsxOpeningElement Interesting>
                           <JsxText Skipped />
-                          <JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.0) SavedElement>
+                          <JsxSelfClosingElement (RootStack.Screen-0.0.0.0.3.0) SavedElement>
                             <PropertyAccessExpression Skipped>
                               <Identifier Skipped />
                             </PropertyAccessExpression Skipped>
@@ -269,9 +269,9 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                                 </JsxExpression Interesting>
                               </JsxAttribute Interesting>
                             </JsxAttributes Interesting>
-                          </JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.0) SavedElement>
+                          </JsxSelfClosingElement (RootStack.Screen-0.0.0.0.3.0) SavedElement>
                           <JsxText Skipped />
-                          <JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.1) SavedElement>
+                          <JsxSelfClosingElement (RootStack.Screen-0.0.0.0.3.1) SavedElement>
                             <PropertyAccessExpression Skipped>
                               <Identifier Skipped />
                             </PropertyAccessExpression Skipped>
@@ -287,21 +287,21 @@ exports[`sample-app tests diagnostics should populate the tree with reasons for 
                                 </JsxExpression Interesting>
                               </JsxAttribute Interesting>
                             </JsxAttributes Interesting>
-                          </JsxSelfClosingElement (Stack.Screen-0.0.0.0.3.1) SavedElement>
+                          </JsxSelfClosingElement (RootStack.Screen-0.0.0.0.3.1) SavedElement>
                           <JsxText Skipped />
                           <JsxClosingElement Skipped>
                             <PropertyAccessExpression Skipped>
                               <Identifier Skipped />
                             </PropertyAccessExpression Skipped>
                           </JsxClosingElement Skipped>
-                        </JsxElement (Stack.Group-0.0.0.0.3) SavedElement>
+                        </JsxElement (RootStack.Group-0.0.0.0.3) SavedElement>
                         <JsxText Skipped />
                         <JsxClosingElement Skipped>
                           <PropertyAccessExpression Skipped>
                             <Identifier Skipped />
                           </PropertyAccessExpression Skipped>
                         </JsxClosingElement Skipped>
-                      </JsxElement (Stack.Navigator-0.0.0.0) SavedElement>
+                      </JsxElement (RootStack.Navigator-0.0.0.0) SavedElement>
                       <JsxText Skipped />
                       <JsxClosingElement Skipped>
                         <Identifier Skipped />
