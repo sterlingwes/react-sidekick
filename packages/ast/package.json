@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
+    "ts-check": "yarn tsc --noEmit",
     "build": "yarn clean && tsc"
   },
   "devDependencies": {},
