@@ -1,11 +1,14 @@
 import {
   Identifier,
+  isAsExpression,
+  isIdentifier,
+  isJsxExpression,
+  isPropertyAccessExpression,
+  isStringLiteral,
   JsxElement,
-  JsxExpression,
   JsxOpeningElement,
   JsxSelfClosingElement,
   Node,
-  StringLiteral,
   SyntaxKind,
 } from "typescript";
 import { findMatchingNpmModule } from "./imports";
@@ -96,18 +99,42 @@ export const target = (
   node.kind === SyntaxKind.JsxSelfClosingElement;
 
 export const jsxValueName = (
-  node: JsxExpression | StringLiteral | undefined
-) => {
-  if (node?.kind === SyntaxKind.JsxExpression) {
-    const exp = (node as JsxExpression).expression;
-    if (exp?.kind === SyntaxKind.Identifier) {
-      return (exp as Identifier).escapedText;
-    }
-  } else if (node?.kind === SyntaxKind.StringLiteral) {
-    return (node as StringLiteral).text;
+  node: Node | undefined,
+  expressionPath: string[] = []
+): string[] => {
+  if (!node) return [];
+
+  if (isStringLiteral(node)) {
+    return [node.text];
   }
 
-  return null;
+  if (
+    isJsxExpression(node) &&
+    node.expression &&
+    isIdentifier(node.expression)
+  ) {
+    return [node.expression.escapedText as string];
+  }
+
+  if (isPropertyAccessExpression(node)) {
+    if (isIdentifier(node.name)) {
+      expressionPath.unshift(node.name.escapedText as string);
+    }
+
+    if (isIdentifier(node.expression)) {
+      expressionPath.unshift(node.expression.escapedText as string);
+    }
+  }
+
+  if (
+    isAsExpression(node) ||
+    isJsxExpression(node) ||
+    isPropertyAccessExpression(node)
+  ) {
+    return jsxValueName(node.expression as Node, expressionPath);
+  }
+
+  return expressionPath;
 };
 
 export const jsxTag = (node: JsxElement | JsxSelfClosingElement) => {
@@ -147,7 +174,9 @@ export const jsxProps = (
 
     return {
       ...acc,
-      [attr.name.escapedText as string]: jsxValueName(attr.initializer),
+      [attr.name.escapedText as string]: jsxValueName(attr.initializer).join(
+        "."
+      ),
     };
   }, {});
 

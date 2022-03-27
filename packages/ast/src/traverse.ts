@@ -302,9 +302,9 @@ export const traverseFromFile = async (
   const tree = createNode({ id: "_root", name: "_Root", fileId: 0 });
   const lookups: NodeLookups = {
     files: options.nodeFiles ?? {},
-    leafNodes: new Set<Id>(),
-    elements: {},
-    thirdParty: {},
+    leafNodes: options.leafNodes ?? new Set<Id>(),
+    elements: options.elements ?? {},
+    thirdParty: options.thirdParty ?? {},
   };
 
   // lookups relevant for this file
@@ -356,7 +356,12 @@ export const traverseFromFile = async (
 
           return traverseFromFile(
             subSource,
-            { ...options, nodeFiles: lookups.files, diagnosticTree },
+            {
+              ...options,
+              thirdParty: lookups.thirdParty,
+              nodeFiles: lookups.files,
+              diagnosticTree,
+            },
             orphanHierarchies
           ).then((result) => {
             orphanHierarchies.push(result);
