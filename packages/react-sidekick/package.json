@@ -14,14 +14,16 @@
   },
   "bin": "./dist/bin.js",
   "dependencies": {
-    "@react-sidekick/native-host": "../react-sidekick-native-host",
+    "@react-sidekick/native-host": "^0.1.1",
     "glob": "^7.1.7",
     "ora": "^5.4.0",
     "react-test-render-transformer": "^0.1.0",
-    "replacestream": "^4.0.3",
-    "ts-node": "^10.1.0"
+    "replacestream": "^4.0.3"
   },
   "devDependencies": {
     "@types/glob": "^7.1.4"
+  },
+  "peerDependencies": {
+    "@babel/register": "*"
   }
 }

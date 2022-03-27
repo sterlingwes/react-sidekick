@@ -1,17 +1,5 @@
 #!/usr/bin/env node
 
-require("ts-node").register({
-  cwd: process.cwd(),
-  typeCheck: false,
-  // ignore: ["(?:^|/)node_modules(?!/react-native)"],
-  compilerOptions: {
-    jsx: "react",
-  },
-});
-
-// @ts-ignore
-global.__DEV__ = false;
-
 import Spinner from "ora";
 import { resolve } from "path";
 import { buildRendererApp } from "./build";
@@ -53,6 +41,81 @@ const run = async () => {
         process.exit(1);
       }
     case "render":
+      const babelPath = `${process.cwd()}/babel.config.js`;
+      console.log(`using project babel path: ${babelPath}`);
+      require("@babel/register")({
+        ignore: [],
+        cache: false,
+        configFile: babelPath,
+        plugins: [
+          [
+            "module-resolver",
+            {
+              extensions: [
+                ".native.js",
+                ".ios.js",
+                ".js",
+                ".ts",
+                ".tsx",
+                ".jsx",
+                ".json",
+                ".svg",
+              ],
+              stripExtensions: [],
+              resolveRelativePaths: true,
+              alias: {
+                //   "react-dom": "react-native",
+              },
+            },
+          ],
+          [
+            "module:@svgr/babel-plugin-transform-svg-component",
+            { native: true, state: { componentName: "SvgComponent" } },
+          ],
+          [
+            "module:@svgr/babel-plugin-transform-react-native-svg",
+            { native: true },
+          ],
+          // [
+          //   "extension-resolver",
+          //   {
+          //     extensions: [
+          //       "native.js",
+          //       "ios.js",
+          //       ".js",
+          //       ".ts",
+          //       ".tsx",
+          //       ".jsx",
+          //       ".json",
+          //     ],
+          //   },
+          // ],
+        ],
+      });
+
+      // @ts-ignore
+      global.__DEV__ = false;
+      // @ts-ignore
+      global.__fbDisableExceptionsManager = true;
+
+      const handler = {
+        // @ts-ignore
+        get(target, prop) {
+          console.log("proxy", { target, prop });
+          return new Proxy(() => {}, handler);
+        },
+        // @ts-ignore
+        apply(target, thisArg, argumentsList) {
+          console.log("proxy()", { target, argumentsList });
+        },
+      };
+
+      // @ts-ignore
+      global.nativeModuleProxy = new Proxy({}, handler);
+
+      // @ts-ignore
+      global.__turboModuleProxy = (nativeModuleName) => new Proxy({}, handler);
+
       if (!commandArg1) {
         spinner.fail(
           "Please specify a glob path to snapshot declaration file(s)."
