@@ -8,7 +8,9 @@ type FilePath = string; // "workspace/path/file.ts"
 export type ImportBinding = { name: string; alias: string | undefined };
 export type CrawlPaths = Record<FilePath, ImportBinding[]>;
 
-export interface ComponentVisitorInput {
+type PluginState = Record<string, unknown>;
+
+export interface ComponentVisitorInput<PState = PluginState> {
   id: Id;
   name: ComponentName;
   element: JsxSelfClosingElement | JsxOpeningElement;
@@ -18,28 +20,28 @@ export interface ComponentVisitorInput {
   path: number[];
   names: Set<string>;
   crawlPaths: CrawlPaths;
-  api: ComponentVisitorApi;
+  api: ComponentVisitorApi<PState>;
 }
 
-export interface ComponentVisitorApi {
+export interface ComponentVisitorApi<PState = PluginState> {
   saveElement: (name: ComponentName) => TreeChange;
-  getMetadata: () => unknown;
-  saveMetadata: (metadata: Record<string, unknown>) => void;
+  getMetadata: () => PState;
+  saveMetadata: <PState>(metadata: PState) => PState;
 }
 
 interface TreeChange {
   newNode?: NodeTree;
 }
 
-export type PluginVisitor = (
-  input: ComponentVisitorInput
+export type PluginVisitor<PState = PluginState> = (
+  input: ComponentVisitorInput<PState>
 ) => TreeChange | undefined;
 
-export interface Plugin {
+export interface Plugin<PState = PluginState> {
   namespace: string;
   sourceModules: string[];
   importNames: string[];
-  visitComponent: PluginVisitor;
+  visitComponent: PluginVisitor<PState>;
 }
 
 export interface NodeTree {
@@ -64,7 +66,7 @@ export interface NodeLookups {
   files: Record<number, string>;
   leafNodes: Set<Id>;
   elements: Record<Id, NodeElement>;
-  thirdParty: Record<string, unknown>;
+  thirdParty: Record<string, PluginState>;
 }
 
 export interface AstState extends NodeLookups {
@@ -82,7 +84,7 @@ export interface SharedOptions {
   compilerOptions?: CompilerOptions;
 }
 
-export interface TraverseOptions extends SharedOptions {
+export interface TraverseOptions extends SharedOptions, Partial<NodeLookups> {
   dirname: string;
   projectFiles: string[];
   nodeFiles?: Record<number, string>;

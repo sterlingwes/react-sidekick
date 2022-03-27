@@ -26,15 +26,17 @@ const getPlugin = (crawlPaths: CrawlPaths, plugins: Plugin[]) => {
   });
 };
 
-const providePluginApi = (
+const providePluginApi = <T>(
   namespace: string,
   pluginVisitorInputs: PluginVisitorInputs
 ) => ({
   api: {
     saveElement: saveChildElement(pluginVisitorInputs),
     getMetadata: () => pluginVisitorInputs.lookups.thirdParty[namespace],
-    saveMetadata: (metadata: Record<string, unknown>) => {
+    saveMetadata: (metadata: T) => {
+      // @ts-expect-error need to fix generic usage
       pluginVisitorInputs.lookups.thirdParty[namespace] = metadata;
+      return pluginVisitorInputs.lookups.thirdParty[namespace];
     },
   },
 });
@@ -69,6 +71,7 @@ export const applyPlugins = ({
       names,
       crawlPaths,
     };
+    // @ts-expect-error need to fix generic usage
     const treeChange = plugin.visitComponent({
       ...pluginVisitorInputs,
       ...providePluginApi(plugin.namespace, pluginVisitorInputs),
