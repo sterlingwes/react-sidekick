@@ -1,10 +1,11 @@
 {
   "name": "@react-sidekick/ast",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "main": "dist/index.js",
   "files": [
-    "dist/**"
+    "dist/**",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
