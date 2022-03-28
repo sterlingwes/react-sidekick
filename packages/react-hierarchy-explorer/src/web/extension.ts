@@ -5,13 +5,18 @@ const viewId = "reactHierarchy";
 
 export function activate(context: vscode.ExtensionContext) {
   const provider = new TreeProvider();
-  // vscode.window.registerTreeDataProvider(viewId, provider);
 
   const treeView = vscode.window.createTreeView(viewId, {
     treeDataProvider: provider,
   });
 
-  provider.refresh();
+  treeView.onDidChangeVisibility((e) => {
+    if (e.visible) {
+      provider.refresh();
+    } else {
+      provider.onHide();
+    }
+  });
 
   let refreshDisposable = vscode.commands.registerCommand(
     viewId + ".refreshEntry",
@@ -21,6 +26,12 @@ export function activate(context: vscode.ExtensionContext) {
   let focusDisposable = vscode.commands.registerCommand(
     viewId + ".focusRelatedFile",
     (e) => {
+      if (!e || !e.node) {
+        vscode.window.showInformationMessage(
+          "This command only works from the item action button in the sidebar treeview."
+        );
+        return;
+      }
       provider.focusRelatedFile(e);
     }
   );
@@ -30,9 +41,20 @@ export function activate(context: vscode.ExtensionContext) {
     () => provider.runDiagnostic()
   );
 
+  let collapseTree = vscode.commands.registerCommand(
+    viewId + ".collapseTree",
+    () => provider.collapseTree()
+  );
+
+  let expandTree = vscode.commands.registerCommand(viewId + ".expandTree", () =>
+    provider.expandTree()
+  );
+
   context.subscriptions.push(refreshDisposable);
   context.subscriptions.push(focusDisposable);
   context.subscriptions.push(diagnosticDisposable);
+  context.subscriptions.push(collapseTree);
+  context.subscriptions.push(expandTree);
 }
 
 export function deactivate() {}

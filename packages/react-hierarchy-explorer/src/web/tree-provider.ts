@@ -3,9 +3,12 @@ import { traverseProject } from "@react-sidekick/ast/dist/traverse";
 import { NodeTree, SharedOptions } from "@react-sidekick/ast/dist/types";
 import { renderDiagnosticText } from "@react-sidekick/ast/dist/render";
 
-const collapsedStateForNode = (node: NodeTree) =>
+const collapsedStateForNode = (
+  node: NodeTree,
+  defaultState: vscode.TreeItemCollapsibleState
+) =>
   node.children?.length > 0
-    ? vscode.TreeItemCollapsibleState.Collapsed
+    ? defaultState
     : vscode.TreeItemCollapsibleState.None;
 
 enum NodeType {
@@ -21,13 +24,22 @@ const iconByType = Object.freeze({
 export class ReactNode extends vscode.TreeItem {
   public node: NodeTree;
   public type: NodeType;
+  private static defaultCollapsedState =
+    vscode.TreeItemCollapsibleState.Expanded;
 
   constructor(node: NodeTree) {
-    super(node.name, collapsedStateForNode(node));
+    super(
+      node.name,
+      collapsedStateForNode(node, ReactNode.defaultCollapsedState)
+    );
     this.node = node;
     this.contextValue = "node";
     this.type = NodeType.component;
     this.iconPath = iconByType[this.type];
+  }
+
+  static setDefaultState(state: vscode.TreeItemCollapsibleState) {
+    ReactNode.defaultCollapsedState = state;
   }
 
   setType(type: NodeType) {
@@ -53,6 +65,26 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
     ReactNode | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
+  private dataResetting = false;
+
+  async collapseTree() {
+    ReactNode.setDefaultState(vscode.TreeItemCollapsibleState.Collapsed);
+
+    this.dataResetting = true;
+    this._onDidChangeTreeData.fire();
+
+    return this.refresh();
+  }
+
+  async expandTree() {
+    ReactNode.setDefaultState(vscode.TreeItemCollapsibleState.Expanded);
+
+    this.dataResetting = true;
+    this._onDidChangeTreeData.fire();
+
+    return this.refresh();
+  }
+
   async refresh() {
     const [firstWorkspace] = vscode.workspace.workspaceFolders || [];
     if (!firstWorkspace) {
@@ -61,6 +93,12 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
       // );
       return;
     }
+
+    vscode.commands.executeCommand(
+      "setContext",
+      "reactHierarchy.loadingTreeView",
+      true
+    );
 
     const { runDiagnostic } = this.traverseOptions;
 
@@ -84,13 +122,24 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
       console.error("Could not traverseProject", e);
     }
 
+    this.dataResetting = false;
+
+    vscode.commands.executeCommand(
+      "setContext",
+      "reactHierarchy.loadingTreeView",
+      false
+    );
+
     this._onDidChangeTreeData.fire();
 
     return result;
   }
 
+  onHide() {
+    // do something with this
+  }
+
   focusRelatedFile({ node }: ReactNode) {
-    console.log("focus node:", node);
     const file = this.nodeFiles?.[node.fileId];
     if (file) {
       const uri = vscode.Uri.file(file);
@@ -118,7 +167,7 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
   }
 
   getChildren(element?: ReactNode): vscode.ProviderResult<ReactNode[]> {
-    if (!this.hierarchy) {
+    if (!this.hierarchy || this.dataResetting) {
       return [];
     }
 
@@ -129,7 +178,7 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
     }
   }
 
-  addEachNode(nodes: NodeTree[]) {
+  private addEachNode(nodes: NodeTree[]) {
     return nodes.map((node) => {
       if (
         collapseLikeNamedNodes &&
@@ -143,14 +192,14 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
     });
   }
 
-  withTypeReset(reactNode: ReactNode) {
+  private withTypeReset(reactNode: ReactNode) {
     if (this.isReactNavigationScreen(reactNode)) {
       reactNode.setType(NodeType.reactNavigationScreen);
     }
     return reactNode;
   }
 
-  isReactNavigationScreen({ node }: ReactNode) {
+  private isReactNavigationScreen({ node }: ReactNode) {
     return this.reactNavigationRouteNames?.has(node.name);
   }
 }

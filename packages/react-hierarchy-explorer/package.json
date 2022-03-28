@@ -1,34 +1,44 @@
 {
   "name": "react-hierarchy-explorer",
   "displayName": "React Hierarchy Explorer",
-  "description": "",
+  "description": "Explore your react app hierarchy in an explorer tree view.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.65.0"
   },
   "categories": [
-    "Other"
+    "Debuggers",
+    "Visualization"
   ],
   "activationEvents": [
-    "onView:reactHierarchy",
-    "onCommand:react-hierarchy-explorer.helloWorld"
+    "onView:reactHierarchy"
   ],
   "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "reactHierarchy.refreshEntry",
-        "title": "Refresh",
+        "title": "React Hierarchy Explorer: Refresh",
         "icon": "$(refresh)"
       },
       {
+        "command": "reactHierarchy.collapseTree",
+        "title": "React Hierarchy Explorer: Collapse All",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "reactHierarchy.expandTree",
+        "title": "React Hierarchy Explorer: Expand All",
+        "icon": "$(expand-all)"
+      },
+      {
         "command": "reactHierarchy.focusRelatedFile",
-        "title": "Focus Related File",
+        "title": "React Hierarchy Explorer: Focus Related File",
         "icon": "$(export)"
       },
       {
         "command": "reactHierarchy.printDiagnostic",
-        "title": "Run Diagnostic"
+        "title": "React Hierarchy Explorer: Run Diagnostic"
       }
     ],
     "views": {
@@ -42,7 +52,13 @@
     "viewsWelcome": [
       {
         "view": "reactHierarchy",
-        "contents": "No stuff!"
+        "contents": "No react hierarchy found. Do you have an App.tsx in your workspace root?",
+        "when": "reactHierarchy.loadingTreeView != true"
+      },
+      {
+        "view": "reactHierarchy",
+        "contents": "Loading react hierarchy...",
+        "when": "reactHierarchy.loadingTreeView == true"
       }
     ],
     "menus": {
@@ -50,6 +66,16 @@
         {
           "command": "reactHierarchy.refreshEntry",
           "when": "view == reactHierarchy",
+          "group": "navigation"
+        },
+        {
+          "command": "reactHierarchy.collapseTree",
+          "when": "view === reactHierarchy",
+          "group": "navigation"
+        },
+        {
+          "command": "reactHierarchy.expandTree",
+          "when": "view === reactHierarchy",
           "group": "navigation"
         }
       ],
