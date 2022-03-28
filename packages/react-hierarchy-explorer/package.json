@@ -116,6 +116,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@react-sidekick/ast": "file:.yalc/@react-sidekick/ast"
+    "@react-sidekick/ast": "^0.2.0"
   }
 }
