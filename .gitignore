@@ -80,3 +80,7 @@ dist/
 # tmp
 rnfastview.app*
 jsstringex.js
+
+# vscode extension
+*.vsix
+.vscode-test-web/
