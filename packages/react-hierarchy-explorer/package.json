@@ -3,6 +3,11 @@
   "displayName": "React Hierarchy Explorer",
   "description": "Explore your react app hierarchy in an explorer tree view.",
   "version": "0.0.1",
+  "publisher": "react-sidekick",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/sterlingwes/react-sidekick"
+  },
   "engines": {
     "vscode": "^1.65.0"
   },
@@ -96,7 +101,7 @@
     "watch-web": "webpack --watch",
     "package-web": "webpack --mode production --devtool hidden-source-map",
     "lint": "eslint src --ext ts",
-    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
+    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ../../../mh-mobile-app"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",
