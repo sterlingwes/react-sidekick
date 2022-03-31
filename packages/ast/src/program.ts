@@ -1,6 +1,6 @@
 import path from "path";
 import { createProject } from "@ts-morph/bootstrap";
-import { readdir, readFile } from "fs";
+import { Dirent, readdir, readFile } from "fs";
 import ts, { JsxEmit } from "typescript";
 import { CompilerOptions } from "./types";
 
@@ -12,9 +12,20 @@ const readFilePromise = (path: string) =>
   });
 
 const directoryOfInterest = (dirName: string) =>
-  dirName !== "node_modules" && !dirName.startsWith("__");
+  dirName !== "node_modules" &&
+  !dirName.startsWith("__") &&
+  !dirName.startsWith(".");
+
+const isRootDir = (acc: string[]) => acc.length === 0;
+
 const fileOfInterest = (fileName: string) =>
   fileName.endsWith(".tsx") || fileName.includes("index.ts");
+
+const haveNotTraversedSrcYet = (acc: string[], item: Dirent, dirPath: string) =>
+  item.isDirectory() &&
+  isRootDir(acc) &&
+  dirPath.includes("src") === false &&
+  item.name !== "src";
 
 const resolveFilesFromDirectory = (
   dirPath: string,
@@ -27,6 +38,10 @@ const resolveFilesFromDirectory = (
         return chain.then((acc) => {
           if (item.isFile() && fileOfInterest(item.name)) {
             return acc.concat(`${dirPath}/${item.name}`);
+          }
+
+          if (haveNotTraversedSrcYet(acc, item, dirPath)) {
+            return acc;
           }
 
           if (item.isDirectory() && directoryOfInterest(item.name)) {
