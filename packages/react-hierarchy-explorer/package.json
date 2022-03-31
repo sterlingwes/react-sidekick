@@ -2,7 +2,7 @@
   "name": "react-hierarchy-explorer",
   "displayName": "React Hierarchy Explorer",
   "description": "Explore your react app hierarchy in an explorer tree view.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "react-sidekick",
   "license": "MIT",
   "repository": {
