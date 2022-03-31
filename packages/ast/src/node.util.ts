@@ -53,6 +53,7 @@ const interestingTypes = [
   SyntaxKind.Block,
   SyntaxKind.CallExpression,
   SyntaxKind.FirstStatement,
+  SyntaxKind.FunctionDeclaration,
   SyntaxKind.JsxAttribute,
   SyntaxKind.JsxAttributes,
   SyntaxKind.JsxExpression,
