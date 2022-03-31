@@ -7,6 +7,7 @@ import { ActionList } from "./src/screens/ActionList";
 import { DetailScreen } from "./src/screens/DetailScreen";
 import { getStore } from "./src/other";
 import { MenuButton } from "./src/components";
+import OldSchoolModal from "./src/components/OldSchoolModal";
 import { SettingsProfileScreen } from "./src/screens/SettingsProfileScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 
@@ -39,6 +40,10 @@ export const Main = () => {
             <RootStack.Screen
               name="SettingsProfile"
               component={SettingsProfileScreen}
+            />
+            <RootStack.Screen
+              name="OldFunctionModal"
+              component={OldSchoolModal}
             />
           </RootStack.Group>
         </RootStack.Navigator>
