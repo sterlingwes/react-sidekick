@@ -44,6 +44,10 @@
       {
         "command": "reactHierarchy.printDiagnostic",
         "title": "React Hierarchy Explorer: Run Diagnostic"
+      },
+      {
+        "command": "reactHierarchy.exportHierarchy",
+        "title": "React Hierarchy Explorer: Export Hierarchy"
       }
     ],
     "views": {
@@ -121,6 +125,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@react-sidekick/ast": "^0.2.0"
+    "@react-sidekick/ast": "^0.2.2"
   }
 }

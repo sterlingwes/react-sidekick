@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { vfsUri } from "../utils";
 
 /**
  * throws if file is not accessible, returns undefined
@@ -8,7 +9,8 @@ export const access = (
   file: string,
   callback: (e: Error | undefined) => void
 ) => {
-  vscode.workspace.fs.stat(vscode.Uri.file(file)).then(
+  const uri = vfsUri(file);
+  vscode.workspace.fs.stat(uri).then(
     (stat) => {
       if (stat.type === vscode.FileType.File) {
         callback(undefined);
@@ -29,7 +31,8 @@ export const readFile = (
   path: string,
   callback: (e: Error | null, data?: string) => void
 ) => {
-  vscode.workspace.fs.readFile(vscode.Uri.file(path)).then(
+  const uri = vfsUri(path);
+  vscode.workspace.fs.readFile(uri).then(
     (fileUintArray) => callback(null, new TextDecoder().decode(fileUintArray)),
     (e: Error) => callback(e)
   );
@@ -54,7 +57,8 @@ export const readdir = (
   options: { withFileTypes: true },
   callback: (err: Error | null, files?: NodeFsDirent[]) => void
 ) => {
-  vscode.workspace.fs.readDirectory(vscode.Uri.file(path)).then(
+  const uri = vfsUri(path);
+  vscode.workspace.fs.readDirectory(uri).then(
     (fileTuples) => {
       callback(
         null,

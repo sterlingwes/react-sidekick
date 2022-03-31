@@ -41,6 +41,11 @@ export function activate(context: vscode.ExtensionContext) {
     () => provider.runDiagnostic()
   );
 
+  let exportDisposable = vscode.commands.registerCommand(
+    viewId + ".exportHierarchy",
+    () => provider.exportHierarchy()
+  );
+
   let collapseTree = vscode.commands.registerCommand(
     viewId + ".collapseTree",
     () => provider.collapseTree()
@@ -53,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(refreshDisposable);
   context.subscriptions.push(focusDisposable);
   context.subscriptions.push(diagnosticDisposable);
+  context.subscriptions.push(exportDisposable);
   context.subscriptions.push(collapseTree);
   context.subscriptions.push(expandTree);
 }

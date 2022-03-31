@@ -1,7 +1,11 @@
 import * as vscode from "vscode";
 import { traverseProject } from "@react-sidekick/ast/dist/traverse";
 import { NodeTree, SharedOptions } from "@react-sidekick/ast/dist/types";
-import { renderDiagnosticText } from "@react-sidekick/ast/dist/render";
+import {
+  renderDiagnosticText,
+  renderTreeText,
+} from "@react-sidekick/ast/dist/render";
+import { vfsUri } from "../utils";
 
 const collapsedStateForNode = (
   node: NodeTree,
@@ -142,7 +146,7 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
   focusRelatedFile({ node }: ReactNode) {
     const file = this.nodeFiles?.[node.fileId];
     if (file) {
-      const uri = vscode.Uri.file(file);
+      const uri = vfsUri(file);
       vscode.commands.executeCommand("vscode.open", uri).then(
         () => console.log("Opened " + file),
         (err) => console.warn("Failed to open " + file, err)
@@ -156,9 +160,22 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
     this.traverseOptions.runDiagnostic = true;
     const result = await this.refresh();
     if (result?.diagnosticTree) {
-      console.log("diagnostic:", renderDiagnosticText(result.diagnosticTree));
+      await vscode.workspace.openTextDocument({
+        content: renderDiagnosticText(result.diagnosticTree),
+      });
     } else {
-      console.warn("no diagnostic available");
+      vscode.window.showInformationMessage("No diagnostic available.");
+    }
+  }
+
+  async exportHierarchy() {
+    const result = await this.refresh();
+    if (result?.hierarchy) {
+      await vscode.workspace.openTextDocument({
+        content: renderTreeText(result.hierarchy),
+      });
+    } else {
+      vscode.window.showInformationMessage("No export available.");
     }
   }
 

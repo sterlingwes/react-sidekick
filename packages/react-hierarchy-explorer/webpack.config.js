@@ -12,6 +12,13 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const nodeModulesPaths = [
+  path.resolve(__dirname, "node_modules"),
+  path.resolve(__dirname, "../../node_modules"),
+];
+
+console.log("searching for node modules in:", nodeModulesPaths.join(" and "));
+
 /** @type WebpackConfig */
 const webExtensionConfig = {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
@@ -29,6 +36,7 @@ const webExtensionConfig = {
   resolve: {
     mainFields: ["browser", "module", "main"], // look for `browser` entry point in imported node modules
     extensions: [".ts", ".js"], // support ts-files and js-files
+    modules: nodeModulesPaths,
     alias: {
       // provides alternate implementation for node module and source files
     },
