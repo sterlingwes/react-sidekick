@@ -57,6 +57,8 @@ export const handleImportDeclaration = (
   }
 };
 
+const nonSrcFileExtension = (crawlPath: string) => /\.svg$/.test(crawlPath);
+
 export const interestingCrawlPaths = (
   crawlPaths: CrawlPaths,
   componentIdentifiers: Set<string>,
@@ -71,6 +73,10 @@ export const interestingCrawlPaths = (
     .filter((crawlPath) => {
       if (/\./.test(crawlPath) === false) {
         // skip non-relative paths
+        return false;
+      }
+
+      if (nonSrcFileExtension(crawlPath)) {
         return false;
       }
 
