@@ -21,9 +21,7 @@ export const access = (
         callback(err);
       }
     },
-    (err) => {
-      callback(err);
-    }
+    (err) => callback(err)
   );
 };
 
@@ -34,7 +32,10 @@ export const readFile = (
   const uri = vfsUri(path);
   vscode.workspace.fs.readFile(uri).then(
     (fileUintArray) => callback(null, new TextDecoder().decode(fileUintArray)),
-    (e: Error) => callback(e)
+    (e: Error) => {
+      console.error("readFile error", { path, uri, e });
+      callback(e);
+    }
   );
 };
 
@@ -65,7 +66,10 @@ export const readdir = (
         fileTuples.map((tuple) => asDirent(tuple))
       );
     },
-    (err: Error) => callback(err)
+    (err: Error) => {
+      console.error("readdir error", { path, uri, err });
+      callback(err);
+    }
   );
 };
 
