@@ -6,6 +6,7 @@ import {
   renderTreeText,
 } from "@react-sidekick/ast/dist/render";
 import { vfsUri } from "../utils";
+import { findAppRoot, FindRootFailure } from "./find-app-root";
 
 const collapsedStateForNode = (
   node: NodeTree,
@@ -90,11 +91,32 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
   }
 
   async refresh() {
-    const [firstWorkspace] = vscode.workspace.workspaceFolders || [];
-    if (!firstWorkspace) {
-      // vscode.window.showErrorMessage(
-      //   "You must open a react workspace before you can explore it."
-      // );
+    const appRoot = await findAppRoot();
+
+    if (appRoot.fail === FindRootFailure.noWorkspace) {
+      vscode.commands.executeCommand(
+        "setContext",
+        "reactHierarchy.loadError",
+        "noWorkspace"
+      );
+      return;
+    }
+
+    if (appRoot.fail === FindRootFailure.noEntryFile) {
+      vscode.commands.executeCommand(
+        "setContext",
+        "reactHierarchy.loadError",
+        "noEntryFile"
+      );
+      return;
+    }
+
+    if (appRoot.fail === FindRootFailure.badEntryFile) {
+      vscode.commands.executeCommand(
+        "setContext",
+        "reactHierarchy.loadError",
+        "badEntryFile"
+      );
       return;
     }
 
@@ -106,9 +128,18 @@ export class TreeProvider implements vscode.TreeDataProvider<ReactNode> {
 
     const { runDiagnostic } = this.traverseOptions;
 
+    if (typeof appRoot.uri?.path !== "string") {
+      vscode.window.showErrorMessage(
+        "Unexpected error finding app entry file. App root path is undefined."
+      );
+      return;
+    }
+
+    console.log(`opening project from ${appRoot.uri}`);
+
     let result;
     try {
-      result = await traverseProject(`${firstWorkspace.uri.path}/App.tsx`, {
+      result = await traverseProject(appRoot.uri.path, {
         plugins: [
           require("@react-sidekick/ast/dist/libraries/react-navigation"),
         ],

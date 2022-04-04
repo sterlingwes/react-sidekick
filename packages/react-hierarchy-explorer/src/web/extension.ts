@@ -4,6 +4,11 @@ import { TreeProvider } from "./tree-provider";
 const viewId = "reactHierarchy";
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log({
+    context: Object.keys(context),
+    workspaces: vscode.workspace.workspaceFolders,
+  });
+
   const provider = new TreeProvider();
 
   const treeView = vscode.window.createTreeView(viewId, {
