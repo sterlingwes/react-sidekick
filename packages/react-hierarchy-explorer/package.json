@@ -2,7 +2,7 @@
   "name": "react-hierarchy-explorer",
   "displayName": "React Hierarchy Explorer",
   "description": "Explore your react app hierarchy in an explorer tree view.",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "publisher": "react-sidekick",
   "license": "MIT",
   "repository": {
@@ -19,6 +19,9 @@
     "onView:reactHierarchy"
   ],
   "browser": "./dist/web/extension.js",
+  "capabilities": {
+    "virtualWorkspaces": true
+  },
   "contributes": {
     "commands": [
       {
@@ -68,6 +71,21 @@
         "view": "reactHierarchy",
         "contents": "Loading react hierarchy...",
         "when": "reactHierarchy.loadingTreeView == true"
+      },
+      {
+        "view": "reactHierarchy",
+        "contents": "No open workspace.",
+        "when": "reactHierarchy.loadError == 'noWorkspace'"
+      },
+      {
+        "view": "reactHierarchy",
+        "contents": "Could not find an index file to crawl from.",
+        "when": "reactHierarchy.loadError == 'noEntryFile'"
+      },
+      {
+        "view": "reactHierarchy",
+        "contents": "Index file found was of unexpected format.",
+        "when": "reactHierarchy.loadError == 'badEntryFile'"
       }
     ],
     "menus": {
